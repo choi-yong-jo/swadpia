@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.co.swadpia.admin.dto.AdminSessionDTO;
 import kr.co.swadpia.admin.service.AdminAuthService;
 import kr.co.swadpia.common.dto.ErrorResponseDTO;
-import kr.co.swadpia.constant.ErrorCode;
+import kr.co.swadpia.common.constant.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

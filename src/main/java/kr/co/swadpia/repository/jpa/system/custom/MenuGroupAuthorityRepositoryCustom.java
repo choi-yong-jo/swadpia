@@ -1,7 +1,7 @@
 package kr.co.swadpia.repository.jpa.system.custom;
 
-import kr.co.swadpia.sample.MemberSearchCondition;
-import kr.co.swadpia.sample.MemberTeamDto;
+import kr.co.swadpia.member.dto.MemberSearchCondition;
+import kr.co.swadpia.member.dto.MemberTeamDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

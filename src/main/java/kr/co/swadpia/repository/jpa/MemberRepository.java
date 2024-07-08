@@ -1,6 +1,6 @@
 package kr.co.swadpia.repository.jpa;
 
-import kr.co.swadpia.entity.Member;
+import kr.co.swadpia.member.entity.Member;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

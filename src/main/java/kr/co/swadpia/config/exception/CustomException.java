@@ -1,6 +1,6 @@
 package kr.co.swadpia.config.exception;
 
-import kr.co.swadpia.constant.ErrorCode;
+import kr.co.swadpia.common.constant.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -20,13 +20,13 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnExpression(value = "'${swadpia.profile}' == 'prod' || '${swadpia.profile}' == 'develop'")
+@ConditionalOnExpression(value = "'${swadpia.admin.profile}' == 'prod' || '${swadpia.admin.profile}' == 'develop'")
 public class ScheduledTasks {
 
-        private final MailService mailService;
-        private final RedisTemplate<String, String> redisTemplate;
-        private final ObjectMapper mapper;
-        private final EmailQueueRepository emailQueueRepository;
+    private final MailService mailService;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ObjectMapper mapper;
+    private final EmailQueueRepository emailQueueRepository;
 
 
     @SchedulerLock(name = "oneMinuteJob", lockAtLeastFor = "59S", lockAtMostFor = "59S")

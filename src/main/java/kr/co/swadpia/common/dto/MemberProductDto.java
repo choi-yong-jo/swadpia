@@ -1,6 +1,6 @@
 package kr.co.swadpia.common.dto;
 
-import kr.co.swadpia.constant.SalesStatus;
+import kr.co.swadpia.common.constant.SalesStatus;
 
 public class MemberProductDto {
 

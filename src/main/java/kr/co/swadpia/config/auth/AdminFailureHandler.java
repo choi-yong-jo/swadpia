@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.swadpia.common.dto.ErrorResponseDTO;
-import kr.co.swadpia.constant.ErrorCode;
+import kr.co.swadpia.common.constant.ErrorCode;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;

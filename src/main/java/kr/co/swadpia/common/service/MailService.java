@@ -3,7 +3,7 @@ package kr.co.swadpia.common.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import kr.co.swadpia.constant.EmailType;
+import kr.co.swadpia.common.constant.EmailType;
 import kr.co.swadpia.entity.EmailQueue;
 import kr.co.swadpia.repository.jpa.EmailQueueRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +18,12 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class MailService {
 
-		private final JavaMailSender javaMailSender;
+	private final JavaMailSender javaMailSender;
 
-		private final EmailQueueRepository emailQueueRepository;
+	private final EmailQueueRepository emailQueueRepository;
 
-		@Value("${spring.mail.username}")
-		private String from;
-
-
-
+	@Value("${spring.mail.username}")
+	private String from;
 
 	public void sendQueue(String title, String to, HashMap<String, String> values, String template,
 		EmailType emailType, Boolean immediate) throws MessagingException {

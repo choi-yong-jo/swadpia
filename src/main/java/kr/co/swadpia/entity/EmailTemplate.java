@@ -1,7 +1,7 @@
 package kr.co.swadpia.entity;
 
 import jakarta.persistence.*;
-import kr.co.swadpia.constant.EmailType;
+import kr.co.swadpia.common.constant.EmailType;
 import lombok.Getter;
 import lombok.Setter;
 

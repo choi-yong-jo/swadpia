@@ -2,7 +2,7 @@ package kr.co.swadpia.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import kr.co.swadpia.constant.EmailType;
+import kr.co.swadpia.common.constant.EmailType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;

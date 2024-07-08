@@ -10,8 +10,6 @@ import org.springframework.util.ObjectUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.micrometer.common.util.StringUtils.isEmpty;
-
 public class CommonCodeRepositoryImpl implements CommonCodeRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;

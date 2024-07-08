@@ -1,6 +1,6 @@
 package kr.co.swadpia.repository.jpa;
 
-import kr.co.swadpia.entity.Role;
+import kr.co.swadpia.member.entity.Role;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 

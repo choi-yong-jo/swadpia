@@ -2,7 +2,7 @@ package kr.co.swadpia.config.advice;
 
 import kr.co.swadpia.config.exception.CustomException;
 import kr.co.swadpia.common.dto.ErrorResponseDTO;
-import kr.co.swadpia.constant.ErrorCode;
+import kr.co.swadpia.common.constant.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

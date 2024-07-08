@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import kr.co.swadpia.common.dto.*;
 import kr.co.swadpia.common.service.AuthService;
 import kr.co.swadpia.config.exception.CustomException;
-import kr.co.swadpia.constant.ErrorCode;
+import kr.co.swadpia.common.constant.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

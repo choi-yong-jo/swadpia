@@ -1,7 +1,7 @@
 package kr.co.swadpia.common.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kr.co.swadpia.constant.SalesStatus;
+import kr.co.swadpia.common.constant.SalesStatus;
 import lombok.Data;
 
 @Data

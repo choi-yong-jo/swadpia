@@ -1,6 +1,7 @@
 package kr.co.swadpia.entity;
 
 import jakarta.persistence.*;
+import kr.co.swadpia.member.entity.Role;
 import lombok.Getter;
 import lombok.Setter;
 

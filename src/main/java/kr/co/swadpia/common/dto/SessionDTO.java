@@ -1,6 +1,6 @@
 package kr.co.swadpia.common.dto;
 
-import kr.co.swadpia.entity.Role;
+import kr.co.swadpia.member.entity.Role;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

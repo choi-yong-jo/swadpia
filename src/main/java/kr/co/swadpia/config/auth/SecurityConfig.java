@@ -60,7 +60,7 @@ public class SecurityConfig  {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/v2/api-docs").permitAll()
                         .requestMatchers("/api/common/**").permitAll()
-                        .requestMatchers("/api/test/**").permitAll()
+                        .requestMatchers("/api/member/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v0/**").permitAll() //TODO 삭제예정
                         .requestMatchers("/api/elastic/**").permitAll()
@@ -75,13 +75,6 @@ public class SecurityConfig  {
                 }
             }
         });*/
-
-        //TODO 삭제예정
-       http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/member/**").hasAnyAuthority("MEMBER")
-                .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
-                .anyRequest().authenticated()
-        );
 
         http.addFilter(memberAuthenticationFilter);
         http.addFilter(adminAuthenticationFilter);

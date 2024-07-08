@@ -7,7 +7,6 @@ import java.util.Date;
 @Data
 public class MemberUpdateDTO {
 
-
 	private Long memberId;
 	private String email;
 	private String password;
@@ -22,7 +21,5 @@ public class MemberUpdateDTO {
 	private String connInfo;
 	private Date createdAt;
 	private Boolean marketingAgreement;
-
-
 
 }

@@ -2,7 +2,7 @@ package kr.co.swadpia.entity.personnel;
 
 import jakarta.persistence.*;
 import kr.co.swadpia.entity.AuditingAtByCU;
-import kr.co.swadpia.entity.Role;
+import kr.co.swadpia.member.entity.Role;
 import kr.co.swadpia.entity.system.DepartmentEmployee;
 import kr.co.swadpia.entity.system.MenuGroupAuthority;
 import lombok.Getter;

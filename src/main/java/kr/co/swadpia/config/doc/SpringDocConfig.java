@@ -72,7 +72,7 @@ public class SpringDocConfig {
         return GroupedOpenApi.builder()
                 .group("test")
                 .pathsToMatch(
-                        "/api/test/**"
+                        "/api/member/**"
                 )
                 .build();
     }

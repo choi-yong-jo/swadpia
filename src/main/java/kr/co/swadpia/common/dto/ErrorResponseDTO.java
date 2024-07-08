@@ -1,6 +1,6 @@
 package kr.co.swadpia.common.dto;
 
-import kr.co.swadpia.constant.ErrorCode;
+import kr.co.swadpia.common.constant.ErrorCode;
 import lombok.Getter;
 
 import java.util.Map;

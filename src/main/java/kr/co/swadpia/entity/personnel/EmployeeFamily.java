@@ -1,7 +1,7 @@
 package kr.co.swadpia.entity.personnel;
 
 import jakarta.persistence.*;
-import kr.co.swadpia.constant.GenderType;
+import kr.co.swadpia.common.constant.GenderType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
