@@ -1,6 +1,6 @@
 
 # 1. 환경 변수
-`BUCKET=swadpia-erp;CRON_SETTLEMENT_COMPLETE=0 0 9 * * WED;CRON_SETTLEMENT_WAITE=0 50 8 * * THU;DATABASE_PASSWORD=password;DATABASE_URL=jdbc:postgresql://devbox.kr:35432/sungwon_erp;DATABASE_USER=sungwon;IMG_SERVER=storage.erp.swadpia.co.kr;IMG_SERVER_KEY=swadpia-erp;IMG_SERVER_SECRET=swadpia-erp;IMG_URL=https://images.erp.swadpia.com/;PROFILE=local;REDIS_HOST=devbox.kr;REDIS_PORT=31379`
+BUCKET=swadpia-erp;CRON_SETTLEMENT_COMPLETE=0 0 9 * * WED;CRON_SETTLEMENT_WAITE=0 50 8 * * THU;DATABASE_PASSWORD=cyjo1207;DATABASE_URL=jdbc:postgresql://localhost:5432/sungwon;DATABASE_USER=postgres;IMG_SERVER=storage.erp.swadpia.co.kr;IMG_SERVER_KEY=swadpia-erp;IMG_SERVER_SECRET=swadpia-erp;IMG_URL=https://images.erp.swadpia.com/;PROFILE=local;REDIS_HOST=devbox.kr;REDIS_PORT=31379
 
 ------
 
