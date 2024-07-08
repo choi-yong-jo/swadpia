@@ -1,6 +1,7 @@
 package kr.co.swadpia.member.service;
 
 import kr.co.swadpia.common.dto.SessionDTO;
+import kr.co.swadpia.member.dto.MemberInsertDTO;
 import kr.co.swadpia.member.entity.Member;
 import kr.co.swadpia.member.dto.MemberUpdateDTO;
 import kr.co.swadpia.repository.jpa.MemberRepository;
@@ -62,21 +63,45 @@ public class MemberService {
 	}
 
 	@Transactional("transactionManager")
-	public Member save(Member member){
+	public Member insert(MemberInsertDTO dto){
+		Member member = setInsertMember(dto);
 		memberRepository.save(member);
 		return member;
 	}
 
 	@Transactional("transactionManager")
-	public boolean updateById(long mbrNo, Member member){
+	public boolean updateById(MemberUpdateDTO dto){
 		boolean result = false;
-		Optional<Member> e = memberRepository.findById(mbrNo);
-		member.setMemberId(mbrNo);
+		Optional<Member> e = memberRepository.findById(dto.getMemberId());
 		if(e.isPresent()){
+			Member member = setUpdateMember(dto);
 			memberRepository.save(member);
 			result = true;
 		}
 		return result;
+	}
+
+	public Member setInsertMember(MemberInsertDTO dto) {
+		Member member = new Member();
+		member.setEmail(dto.getEmail());
+		member.setPassword(dto.getPassword());
+		member.setName(dto.getName());
+		member.setMobile(dto.getMobile());
+
+		return member;
+	}
+
+	public Member setUpdateMember(MemberUpdateDTO dto) {
+		Member member = new Member();
+		member.setMemberId(dto.getMemberId());
+		member.setEmail(dto.getEmail());
+		member.setPassword(dto.getPassword());
+		member.setName(dto.getName());
+		member.setMobile(dto.getMobile());
+		member.setRefreshToken(dto.getRefreshToken());
+		member.setVerificationCode(dto.getVerificationCode());
+
+		return member;
 	}
 
 }
