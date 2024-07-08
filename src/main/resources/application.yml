@@ -36,6 +36,11 @@ spring:
       port: ${REDIS_PORT}
       repositories:
         enabled: true
+    elasticsearch:
+      host: 175.209.227.149:9200
+      username: elastic
+      password: elastic0909
+#      ssl: pwd
   mail:
     host: smtp.gmail.com
     port: 587
