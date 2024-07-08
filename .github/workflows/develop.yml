@@ -1,0 +1,66 @@
+name: admin-api build develop push
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: admin-api dev action
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Print new build number
+        run: echo $GITHUB_RUN_ID
+
+      - name: checkout source code
+        uses: actions/checkout@v2
+        with:
+          ref: develop
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Build with Gradle
+        run: bash ./gradlew bootJar
+
+      - name: Build the Docker image
+        run: docker build . -t ghcr.io/swadpia/admin-api:$GITHUB_RUN_ID
+
+      - name: Login to GitHub Packages Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: push
+        run: docker push ghcr.io/swadpia/admin-api:$GITHUB_RUN_ID
+  kustomize-update:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Check out my other private repo
+        uses: actions/checkout@master
+        with:
+          repository: swadpia/admin-k8s
+          token: ${{ secrets.CR_PAT  }}
+
+      - name: Change config repo values.yaml
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.spec.template.spec.containers.[0].image = "ghcr.io/swadpia/admin-api:${{ github.run_id  }}"' admin-api/api.yml
+
+      - name: Pushes to config repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.CR_PAT }}
+        with:
+          source-directory: "."
+          destination-github-username: "swadpia"
+          destination-repository-name: "admin-k8s"
+          user-email: ryuhon@devbox.kr
+          target-branch: master
+          commit-message: "Change Image version to ${{ github.run_id  }}"

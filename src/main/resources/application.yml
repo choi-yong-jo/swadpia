@@ -1,0 +1,83 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: Asia/Seoul
+        default_batch_fetch_size: 1000
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  mvc:
+    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: classpath:/static/
+      add-mappings: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      repositories:
+        enabled: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dev@giftpia.com
+    password: xqlngswimqaniztf
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+    default-encoding: UTF-8
+  elasticsearch:
+    uris: http://10.4.10.114:9200
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      multiline: true
+
+swadpia:
+  admin:
+    profile: ${PROFILE}
+    fee:
+      rate:
+        buynow: ${FEE_RATE_BUYNOW}
+
+logging:
+  level:
+    root: info
+    org.springframework.security: info
+
+springdoc:
+  swagger-ui:
+    path: /api-docs
+
+# Optional properties commented out
+# spring:
+#   datasource:
+#     hikari:
+#       idleTimeout: 10000
+#       validation-timeout: 10000
+#       maxLifetime: 35000
+#       connection-timeout: 8000
