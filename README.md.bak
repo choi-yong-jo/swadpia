@@ -11,10 +11,8 @@ psql -d postgres -U postgres -p 5432
 -- sungwon 데이터베이스 생성
 create database sungwon;
 
--- sungwon 데이터베이스 접근
 c\ sungwon;
 
--- admion 스키마 생성
 create schema if not exists admin authorization postgres;
 -----
 
