@@ -5,9 +5,10 @@ import lombok.Data;
 @Data
 public class MemberInsertDTO {
 
-	private String email;
-	private String password;
+	private String memberId;
 	private String name;
+	private String password;
+	private String email;
 	private String mobile;
 
 }

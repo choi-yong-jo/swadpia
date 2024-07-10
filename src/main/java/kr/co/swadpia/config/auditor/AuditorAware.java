@@ -23,7 +23,7 @@ public class AuditorAware implements org.springframework.data.domain.AuditorAwar
 
         } else if (authentication.getAuthorities().stream().anyMatch(o -> o.getAuthority().equals("MEMBER"))) {
             SessionDTO sessionDTO = (SessionDTO) authentication.getPrincipal();
-            return Optional.of(sessionDTO.getMemberId());
+            return Optional.of(sessionDTO.getMemberSeq());
         }else{
 
             return Optional.empty();

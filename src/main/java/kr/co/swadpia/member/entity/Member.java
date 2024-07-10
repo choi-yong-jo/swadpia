@@ -13,13 +13,25 @@ public class Member extends AuditingAt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
-    private String email;
-    private String password;
+    private Long memberSeq;
+
+    private String memberId;
+
+    private String teamId;
+
+    @Column(name = "member_nm")
     private String name;
+
+    @Column(name = "member_pw")
+    private String password;
+
+    private String email;
+
     private String mobile;
-    private String verificationCode;
+
     private String refreshToken;
+
+    private String useYn;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "memberRole", joinColumns = @JoinColumn(name = "memberId"), inverseJoinColumns = @JoinColumn(name = "roleId"))

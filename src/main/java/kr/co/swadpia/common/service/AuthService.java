@@ -49,8 +49,6 @@ public class AuthService implements UserDetailsService {
     private final EmailTemplateRepository emailTemplateRepository;
 
 
-
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
@@ -63,7 +61,7 @@ public class AuthService implements UserDetailsService {
             session.setEmail(member.getEmail());
             session.setName(member.getName());
             session.setPassword(member.getPassword());
-            List<GrantedAuthority> authorities = member.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getValue())).collect(Collectors.toList());
+            List<GrantedAuthority> authorities = member.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRoleId())).collect(Collectors.toList());
             session.setAuthorities(authorities);
 
             /*List<Menu> accessibleMenus = menuRepository.findAll().stream()
@@ -89,7 +87,7 @@ public class AuthService implements UserDetailsService {
             session.setPassword(member.getPassword());
             session.setRoleList(member.getRoles());
             List<GrantedAuthority> authorities = member.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getValue())).collect(Collectors.toList());
+                .map(role -> new SimpleGrantedAuthority(role.getRoleId())).collect(Collectors.toList());
             session.setAuthorities(authorities);
             return session;
         } else {
@@ -111,15 +109,14 @@ public class AuthService implements UserDetailsService {
         return true;
     }
 
-    public Boolean resestPassword(String password, String verificationCode) throws Exception {
-        Optional<Member> memberOptional = memberRepository.findByVerificationCode(verificationCode);
+    public Boolean resestPassword(String password, String memberId) throws Exception {
+        Optional<Member> memberOptional = memberRepository.findByMemberId(memberId);
 
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
             member.setPassword(passwordEncoder.encode(password));
-            member.setVerificationCode(null);
             memberRepository.save(member);
             return true;
         } else {
@@ -144,11 +141,10 @@ public class AuthService implements UserDetailsService {
         Optional<Member> memberOptional = memberRepository.findByEmailAndName(email, name);
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
-            member.setVerificationCode(RandomStringUtils.randomAlphanumeric(30));
             member = memberRepository.save(member);
             Optional<EmailTemplate> emailTemplateOptional = emailTemplateRepository.findByType(EmailType.find_password);
             if (emailTemplateOptional.isPresent()) {
-                mailService.sendMail("패스워드 변경", member.getEmail(), "https://erp.swadpia.co.kr/signin/reset-password?verication=" + member.getVerificationCode());
+                mailService.sendMail("패스워드 변경", member.getEmail(), "https://erp.swadpia.co.kr/signin/reset-password?verication=" + member.getMemberId());
             }
 
             return true;
@@ -165,19 +161,15 @@ public class AuthService implements UserDetailsService {
         if (memberRepository.countAllByMobile(param.getMobile()) > 0) {
             throw new Exception("이미 가입된 번호입니다.");
         }
-//        if (memberRepository.countAllByDupInfo(param.getDupInfo()) > 0) {
-//            throw new Exception("이미 가입된 회원입니다.");
-//        }
+
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         Member member = new Member();
         BeanUtils.copyProperties(param, member);
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         List<Role> memberRoles = new ArrayList<>();
-        memberRoles.add(roleRepository.findTopByValue("MEMBER"));
+        memberRoles.add(roleRepository.findTopByRoleId("MEMBER"));
         member.setRoles(memberRoles);
-//        member.setEmailVerification(false);
-        member.setVerificationCode(RandomStringUtils.randomAlphanumeric(20));
 
         Timestamp now = new Timestamp(new Date().getTime());
         member = memberRepository.save(member);
@@ -242,7 +234,7 @@ public class AuthService implements UserDetailsService {
             String accessToken = JWT.create()
                     .withSubject(member.getEmail())
                     .withExpiresAt(new Date(now + AT_EXP_TIME))
-                    .withClaim("roles", member.getRoles().stream().map(Role::getValue)
+                    .withClaim("roles", member.getRoles().stream().map(Role::getRoleId)
                             .collect(Collectors.toList()))
                     .sign(Algorithm.HMAC256(MEMBER_JWT_SECRET));
             Map<String, String> accessTokenResponseMap = new HashMap<>();

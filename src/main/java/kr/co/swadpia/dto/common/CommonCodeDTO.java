@@ -17,23 +17,17 @@ public class CommonCodeDTO {
 
 	private String description;
 
-	private Integer depth;
-
-	private Long parentCodeId;
+	private Integer sortNo;
 
 	private Boolean useYn;
 
-	private List<CommonCodeDTO> children;
-
-	public CommonCodeDTO(Long id, String code, String codeName, String description, Integer depth, Long parentCodeId, Boolean useYn, List<CommonCodeDTO> children) {
+	public CommonCodeDTO(Long id, String code, String codeName, String description, Integer sortNo, Boolean useYn) {
 		this.id = id;
 		this.code = code;
 		this.codeName = codeName;
 		this.description = description;
-		this.depth = depth;
-		this.parentCodeId = parentCodeId;
+		this.sortNo = sortNo;
 		this.useYn = useYn;
-		this.children = children;
 	}
 
 }

@@ -3,9 +3,14 @@ package kr.co.swadpia.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.swadpia.common.constant.ResultCode;
+import kr.co.swadpia.common.dto.LoginParamDTO;
 import kr.co.swadpia.common.dto.ResponseDTO;
 import kr.co.swadpia.common.dto.SessionDTO;
+import kr.co.swadpia.common.utility.RegexUtils;
+import kr.co.swadpia.common.utility.SHA256;
+import kr.co.swadpia.member.dto.LoginDTO;
 import kr.co.swadpia.member.dto.MemberInsertDTO;
+import kr.co.swadpia.member.dto.MemberRoleDTO;
 import kr.co.swadpia.member.dto.MemberUpdateDTO;
 import kr.co.swadpia.member.entity.Member;
 import kr.co.swadpia.member.service.MemberService;
@@ -16,12 +21,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
-@Tag(name = "testAPI")
+@Tag(name = "Member")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/api/member/")
@@ -34,48 +42,82 @@ public class MemberController {
     @GetMapping(value = "/list")
     public ResponseEntity<?> getAllmembers() {
         List<Member> member = memberService.findAll();
-        ResponseDTO responseDTO = new ResponseDTO();
-        HttpStatus status;
-        if (member == null) {
-            responseDTO.setResultCode(ResultCode.NOT_FOUND.getName());
-            responseDTO.setMsg(ResultCode.NOT_FOUND.getValue());
-        } else {
-            responseDTO.setRes(member);
-        }
+        ResponseDTO responseDTO = memberService.selectObject(member);
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "로그인")
+    @PostMapping(value = "/login")
+    public ResponseEntity<?> login(@RequestBody LoginDTO dto) throws NoSuchAlgorithmException {
+        dto.setPassword(SHA256.encrypt(dto.getPassword()));
+        ResponseDTO responseDTO = memberService.login(dto);
+
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "회원등록")
     @PostMapping(value = "/insert")
-    public ResponseEntity<?> saveMember(@RequestBody MemberInsertDTO dto) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        Member member = memberService.insert(dto);
-        if (member != null) {
-            responseDTO.setResultCode(ResultCode.INSERT.getName());
-            responseDTO.setMsg(ResultCode.INSERT.getValue());
-        }
+    public ResponseEntity<?> insertMember(@RequestBody MemberInsertDTO dto) throws NoSuchAlgorithmException {
+        dto.setPassword(SHA256.encrypt(dto.getPassword()));
+        ResponseDTO responseDTO = memberService.insert(dto);
+
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원상세조회")
+    @GetMapping(value = "/detail")
+    public ResponseEntity<?> getMember(@RequestParam("memberSeq") Long memberSeq) {
+        Optional<Member> member = memberService.findById(memberSeq);
+        return new ResponseEntity<Member>(member.get(), HttpStatus.OK);
     }
 
     @Operation(summary = "회원수정")
     @PutMapping(value = "/update")
-    public ResponseEntity<?> updateMember(@RequestParam("mbrNo") Long mbrNo, @RequestBody MemberUpdateDTO dto) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        dto.setMemberId(mbrNo);
-        if (memberService.updateById(dto)) {
-            responseDTO.setResultCode(ResultCode.UPDATE.getName());
-            responseDTO.setMsg(ResultCode.UPDATE.getValue());
-        } else {
-            responseDTO.setResultCode(ResultCode.FAIL_UPDATE.getName());
-            responseDTO.setMsg(ResultCode.FAIL_UPDATE.getValue());
-        }
+    public ResponseEntity<?> updateMember(@RequestParam("memberSeq") Long memberSeq, @RequestBody MemberUpdateDTO dto) throws NoSuchAlgorithmException {
+        dto.setMemberSeq(memberSeq);
+        dto.setPassword(SHA256.encrypt(dto.getPassword()));
+        ResponseDTO responseDTO = memberService.update(dto);
+
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-//    @Operation(summary = "회원정보 조회", description = "회원정보 조회")
-//    @GetMapping(value = "/myInfo")
-//    public Object myInfo(@AuthenticationPrincipal SessionDTO sessionDTO) {
-//        return memberService.myInfo(sessionDTO);
-//    }
+    @Operation(summary = "회원삭제")
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<?> deleteMember(@RequestParam("memberSeq") Long memberSeq) throws NoSuchAlgorithmException {
+        ResponseDTO responseDTO = memberService.delete(memberSeq);
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원권한등록")
+    @PostMapping(value = "/mapping/insert")
+    public ResponseEntity<?> insertMemberRole(@RequestParam("memberSeq") Long memberSeq, @RequestBody MemberRoleDTO dto) throws NoSuchAlgorithmException {
+        Optional<Member> m = memberService.findById(memberSeq);
+        ResponseDTO responseDTO = new ResponseDTO();
+        if(m.isPresent()){
+            String[] s = dto.getRoles().split(",");
+        } else {
+            responseDTO.setResultCode(ResultCode.NOT_FOUND_MEMBER.getName());
+            responseDTO.setMsg(ResultCode.NOT_FOUND_MEMBER.getValue());
+        }
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원권한삭제")
+    @DeleteMapping(value = "/mapping/delete")
+    public ResponseEntity<?> deleteMemberRole(@RequestParam("memberSeq") Long memberSeq, @RequestBody MemberRoleDTO dto) throws NoSuchAlgorithmException {
+        Optional<Member> m = memberService.findById(memberSeq);
+        ResponseDTO responseDTO = new ResponseDTO();
+        if(m.isPresent()){
+
+        } else {
+            responseDTO.setResultCode(ResultCode.NOT_FOUND_MEMBER.getName());
+            responseDTO.setMsg(ResultCode.NOT_FOUND_MEMBER.getValue());
+        }
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
 
 }

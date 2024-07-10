@@ -112,7 +112,7 @@ public class AuthController {
     @Operation(summary = "resetPassword", description = "비번번호 재설정")
     @RequestMapping(value = "/reset-password", method = RequestMethod.POST)
     public  Boolean resetPassword(@RequestBody @Valid ResetPasswordParamDTO param) throws Exception {
-        if (authService.resestPassword(param.getPassword(), param.getVerificationCode())) {
+        if (authService.resestPassword(param.getPassword(), param.getMemberId())) {
             return true;
         } else {
             throw new CustomException(ErrorCode.FAIL, "비밀번호 재설정에 실패했습니다.");

@@ -17,7 +17,7 @@ public interface MemberRepository extends GenericRepository<Member> {
 
     Optional<Member> findByNameAndMobile(String name, String mobile);
 
-    Optional<Member> findByVerificationCode(String verificationCode);
+    Optional<Member> findByMemberId(String memberId);
 
     Integer countAllByEmailAndName(String email, String name);
 

@@ -4,7 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.swadpia.dto.common.CommonCodeCondition;
 import kr.co.swadpia.dto.common.CommonCodeDTO;
-import kr.co.swadpia.entity.common.CommonCode;
+import kr.co.swadpia.system.entity.CommonCode;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
@@ -28,18 +28,13 @@ public class CommonCodeRepositoryImpl implements CommonCodeRepositoryCustom {
 	}
 
 	private CommonCodeDTO convertToDTO(CommonCode commonCode) {
-		List<CommonCodeDTO> children = commonCode.getChildren().stream()
-			.map(this::convertToDTO)
-			.collect(Collectors.toList());
 
 		return new CommonCodeDTO(commonCode.getId(),
 			commonCode.getCode(),
 			commonCode.getCodeName(),
 			commonCode.getDescription(),
-			commonCode.getDepth(),
-			parentIdNullCheck(commonCode.getParent()),
-			commonCode.getUseYn(),
-			children);
+			commonCode.getSortNo(),
+			commonCode.getUseYn());
 	}
 
 	private BooleanExpression code(String code) {

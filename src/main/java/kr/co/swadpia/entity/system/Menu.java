@@ -1,15 +1,13 @@
 package kr.co.swadpia.entity.system;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.Comment;
 
 import java.util.List;
 
 @Entity
-@Setter
-@Getter
+@Data
 public class Menu {
 
     @Id

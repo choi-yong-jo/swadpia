@@ -28,7 +28,7 @@ import static kr.co.swadpia.config.auth.JwtConstants.*;
 @RequiredArgsConstructor
 public class AdminAuthService implements UserDetailsService {
 
-        private final AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -41,7 +41,7 @@ public class AdminAuthService implements UserDetailsService {
             adminSession.setEmail(admin.getEmail());
             adminSession.setName(admin.getName());
             adminSession.setPassword(admin.getPassword());
-            List<GrantedAuthority> authorities = admin.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getValue())).collect(Collectors.toList());
+            List<GrantedAuthority> authorities = admin.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRoleId())).collect(Collectors.toList());
             adminSession.setAuthorities(authorities);
             return adminSession;
         } else {
@@ -77,7 +77,7 @@ public class AdminAuthService implements UserDetailsService {
             String accessToken = JWT.create()
                     .withSubject(admin.getEmail())
                     .withExpiresAt(new Date(now + AT_EXP_TIME))
-                    .withClaim("roles", admin.getRoles().stream().map(Role::getValue)
+                    .withClaim("roles", admin.getRoles().stream().map(Role::getRoleId)
                             .collect(Collectors.toList()))
                     .sign(Algorithm.HMAC256(ADMIN_JWT_SECRET));
             Map<String, String> accessTokenResponseMap = new HashMap<>();

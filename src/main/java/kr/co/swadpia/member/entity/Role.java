@@ -1,42 +1,41 @@
 package kr.co.swadpia.member.entity;
 
 import jakarta.persistence.*;
-import kr.co.swadpia.entity.personnel.Employee;
+import kr.co.swadpia.entity.AuditingAt;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
-public class Role {
+@Table(schema = "admin")
+public class Role extends AuditingAt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roleId;
-    private String value;
+    private Long roleSeq;
+
+    private String roleId;
+
+    @Column(name = "roleNm")
     private String name;
+
     private String description;
 
-    /*@OneToOne(mappedBy = "role")
-    private MenuGroupAuthority menuGroupAuthority;*/
-
-    @ManyToMany(mappedBy = "roles")
-    private List<Employee> employees = new ArrayList<>();
+    private String useYn;
 
     /**
      * Role const
-     * @param value 값
+     * @param roleId 값
      * @param name 이름
      * @param description 설명
      */
-    public Role(String value, String name, String description) {
-        this.value = value;
+    public Role(String roleId, String name, String description) {
+        this.roleId = roleId;
         this.name = name;
         this.description = description;
+    }
+
+    public Role() {
+
     }
 }

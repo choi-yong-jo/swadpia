@@ -37,15 +37,10 @@ public class SpringDocConfig {
         SpringDocUtils.getConfig().replaceWithSchema(LocalTime.class, schema);
     }
 
-
-
-
     @Bean
     public OpenApiCustomizer customOpenAPI() {
         return openApi -> {
-            openApi
-
-                    .getPaths().values().stream()
+            openApi.getPaths().values().stream()
                     .flatMap(pathItem -> pathItem.readOperations().stream())
                     .forEach(operation -> {
                         operation.setOperationId(null);
@@ -59,81 +54,49 @@ public class SpringDocConfig {
         return GroupedOpenApi.builder()
                 .group("member")
                 .pathsToMatch(
-                        "/api/common/**",
-                        "/api/member/**",
-                        "/api/auth/**",
-                        "/api/purchase/**"
-                )
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi test() {
-        return GroupedOpenApi.builder()
-                .group("test")
-                .pathsToMatch(
+                        "/api/role/**",
                         "/api/member/**"
                 )
                 .build();
     }
 
-    @Bean
-    public GroupedOpenApi admin() {
-        return GroupedOpenApi.builder()
-                .group("admin")
-                .pathsToMatch(
-                        "/api/admin/**"
-                )
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi system() {
-        return GroupedOpenApi.builder()
-            .group("system_v0")
-            .pathsToMatch(
-                "/api/v0/system/**"
-            )
-            .build();
-    }
-
-    @Bean
-    public GroupedOpenApi common() {
-        return GroupedOpenApi.builder()
-            .group("common_v0")
-            .pathsToMatch(
-                "/api/v0/common/**"
-            )
-            .build();
-    }
-
-    @Bean
-    public GroupedOpenApi customer() {
-        return GroupedOpenApi.builder()
-            .group("customer_v0")
-            .pathsToMatch(
-                "/api/v0/customer/**"
-            )
-            .build();
-    }
-
-    @Bean
-    public GroupedOpenApi payroll() {
-        return GroupedOpenApi.builder()
-            .group("payroll_v0")
-            .pathsToMatch(
-                "/api/v0/payroll/**"
-            )
-            .build();
-    }
-
-    @Bean
-    public GroupedOpenApi elastic() {
-        return GroupedOpenApi.builder()
-            .group("elastic")
-            .pathsToMatch(
-                "/api/elastic/**"
-            )
-            .build();
-    }
+//    @Bean
+//    public GroupedOpenApi admin() {
+//        return GroupedOpenApi.builder()
+//                .group("admin")
+//                .pathsToMatch(
+//                        "/api/admin/**"
+//                )
+//                .build();
+//    }
+//
+//    @Bean
+//    public GroupedOpenApi system() {
+//        return GroupedOpenApi.builder()
+//            .group("system_v0")
+//            .pathsToMatch(
+//                "/api/v0/system/**"
+//            )
+//            .build();
+//    }
+//
+//    @Bean
+//    public GroupedOpenApi common() {
+//        return GroupedOpenApi.builder()
+//            .group("common_v0")
+//            .pathsToMatch(
+//                "/api/v0/common/**"
+//            )
+//            .build();
+//    }
+//
+//    @Bean
+//    public GroupedOpenApi elastic() {
+//        return GroupedOpenApi.builder()
+//            .group("elastic")
+//            .pathsToMatch(
+//                "/api/elastic/**"
+//            )
+//            .build();
+//    }
 }

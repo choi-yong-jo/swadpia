@@ -11,7 +11,8 @@ import java.util.List;
 @Data
 public class SessionDTO implements UserDetails {
 
-    private Long memberId;
+    private Long memberSeq;
+    private String memberId;
     private String email;
     private String password;
     private String name;

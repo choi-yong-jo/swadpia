@@ -1,6 +1,6 @@
 package kr.co.swadpia.repository.elastic;
 
-import kr.co.swadpia.document.EmployeeDocument;
+import kr.co.swadpia.test.document.EmployeeDocument;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.repository.query.Param;

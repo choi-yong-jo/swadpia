@@ -1,17 +1,14 @@
 package kr.co.swadpia.entity.system;
 
 import jakarta.persistence.*;
-import kr.co.swadpia.entity.personnel.Employee;
 import kr.co.swadpia.dto.system.MenuGroupAuthorityParam;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.Comment;
 
 import java.util.List;
 
 @Entity
-@Setter
-@Getter
+@Data
 public class MenuGroupAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,14 +21,6 @@ public class MenuGroupAuthority {
 
     @OneToMany(mappedBy = "menuGroupAuthority")
     private List<Menu> menus;
-
-    @ManyToMany
-    @JoinTable(
-            name = "relation_menu_group_employee",
-            joinColumns = @JoinColumn(name = "menu_group_id"),
-            inverseJoinColumns = @JoinColumn(name = "employee_id")
-    )
-    private List<Employee> employees;
 
     /*@OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rold_id")

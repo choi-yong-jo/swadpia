@@ -1,27 +1,27 @@
 package kr.co.swadpia.member.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import kr.co.swadpia.entity.AuditingAt;
 import lombok.*;
 
 @Entity
 @Data
-@NoArgsConstructor
+@Table(schema = "admin")
 public class MemberRole extends AuditingAt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberRoleId;
-    private Long memberId;
-    private Long roleId;
-
+    private Long memberRoleSeq;
+    private Long memberSeq;
+    private Long roleSeq;
 
     @Builder
-    public MemberRole(Long memberId, Long roleId) {
-        this.memberId = memberId;
-        this.roleId = roleId;
+    public MemberRole(Long memberSeq, Long roleSeq) {
+        this.memberSeq = memberSeq;
+        this.roleSeq = roleSeq;
+    }
+
+    public MemberRole() {
+
     }
 }

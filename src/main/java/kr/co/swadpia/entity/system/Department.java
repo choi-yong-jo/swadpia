@@ -2,16 +2,14 @@ package kr.co.swadpia.entity.system;
 
 import jakarta.persistence.*;
 import kr.co.swadpia.entity.AuditingAtByCU;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class Department extends AuditingAtByCU {
 
 	@Id
@@ -32,6 +30,4 @@ public class Department extends AuditingAtByCU {
 	@OneToMany(mappedBy = "parent")
 	private List<Department> subDepartments = new ArrayList<>();
 
-	@OneToMany(mappedBy = "department")
-	private List<DepartmentEmployee> departmentEmployees= new ArrayList<>();
 }

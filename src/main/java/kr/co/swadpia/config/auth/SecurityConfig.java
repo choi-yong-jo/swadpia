@@ -61,6 +61,7 @@ public class SecurityConfig  {
                         .requestMatchers("/v2/api-docs").permitAll()
                         .requestMatchers("/api/common/**").permitAll()
                         .requestMatchers("/api/member/**").permitAll()
+                        .requestMatchers("/api/role/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v0/**").permitAll() //TODO 삭제예정
                         .requestMatchers("/api/elastic/**").permitAll()

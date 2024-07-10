@@ -50,6 +50,7 @@ public class MemberAuthorizationFilter extends OncePerRequestFilter {
                 servletPath.contains("/swagger-resources") ||
                 servletPath.contains("/api/common/") ||
                 servletPath.contains("/api/member/") ||
+                servletPath.contains("/api/role/") ||
                 servletPath.contains("/api-docs") ||
                 servletPath.contains("/api/v0/") ||         // TODO 일단 토큰 전부다 안타게 로그인 기능 추가시 삭제
                 servletPath.contains("/api/elastic/")) {

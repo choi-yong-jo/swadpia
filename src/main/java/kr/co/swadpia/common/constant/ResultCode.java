@@ -6,13 +6,18 @@ import lombok.Getter;
 public enum ResultCode {
     SUCCESS("Success", "성공"),
     FAIL("Fail", "실패"),
-    NOT_FOUND("Not Found", "데이터를 찾을 수 없습니다."),
-    NOT_VALIDATED("Not Validated", "데이터 전달 값이 유효하지 않습니다."),
+    EMPTY("empty", "해당 데이터가 존재하지 않습니다."),
     INSERT("Insert", "등록 완료되었습니다."),
-    FAIL_INSERT("Not Found", "등록 실패하였습니다."),
     UPDATE("Update", "수정 완료되었습니다."),
-    FAIL_UPDATE("Not Found", "수정 실패하였습니다."),
     DELETE("Delete", "삭제되었습니다."),
+    NOT_FOUND_MEMBER("Not Found Member", "회원 정보를 찾을 수 없습니다."),
+    NOT_FOUND_ROLE("Not Found Role", "권한 정보를 찾을 수 없습니다."),
+    NOT_VALIDATED("Not Validated", "데이터 전달 값이 유효하지 않습니다."),
+    NOT_VALIDATED_PASSWORD("Not Validated Password", "패쓰워드가 일치하지 않습니다."),
+    NOT_INSERT_SAME_MEMBER_ID("Not Insert Same Member ID", "동일한 아이디로 등록할 수 없습니다."),
+    NOT_VALIDATED_EMAIL("Not validation email", "이메일 형식이 올바르지 않습니다."),
+    NOT_VALIDATED_MOBILE("Not validation mobile", "휴대폰 전화번호 형식이 올바르지 않습니다."),
+    NOT_INSERT_SAME_ROLE("Not Insert Same Role", "동일한 권한 ID와 이름으로 등록할 수 없습니다."),
     INVALIDED_TOKEN("Invalided token", "INVALIDED_TOKEN");
 
     private final String name;
