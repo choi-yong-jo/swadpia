@@ -38,7 +38,6 @@ public class RoleService {
 		BeanUtils.copyProperties(dto, role);
 		ResponseDTO responseDTO = validationCheck(role);
 		if ("".equals(responseDTO.getResultCode()) || responseDTO.getResultCode() == null) {
-			role.setUseYn("Y");
 			roleRepository.save(role);
 			responseDTO.setResultCode(ResultCode.INSERT.getName());
 			responseDTO.setMsg(ResultCode.INSERT.getValue());
@@ -55,7 +54,6 @@ public class RoleService {
 			BeanUtils.copyProperties(dto, role);
 			responseDTO = validationCheck(role);
 			if ("".equals(responseDTO.getResultCode()) || responseDTO.getResultCode() == null) {
-				role.setUseYn("Y");
 				roleRepository.save(role);
 				responseDTO.setResultCode(ResultCode.UPDATE.getName());
 				responseDTO.setMsg(ResultCode.UPDATE.getValue());

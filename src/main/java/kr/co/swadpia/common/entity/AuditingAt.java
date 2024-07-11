@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,8 +14,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class AuditingAt implements Serializable {
@@ -24,13 +22,13 @@ public class AuditingAt implements Serializable {
 
     @CreatedDate
     @Comment("생성일시")
-    @Column(name = "created_at", insertable = true, updatable = false)
+    @Column(insertable = true, updatable = false)
     @JsonFormat(timezone = "GMT+09:00")
     protected Timestamp createdAt;
 
     @LastModifiedDate
     @Comment("수정일시")
-    @Column(name = "updated_at", insertable = true, updatable = true)
+    @Column(insertable = true, updatable = true)
     @JsonFormat(timezone = "GMT+09:00")
     protected Timestamp updatedAt;
 

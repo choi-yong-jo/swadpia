@@ -22,7 +22,7 @@ import java.util.List;
 @Tag(name = "Role")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/api/role/")
+@RequestMapping(path = "/api/role")
 public class RoleController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class RoleController {
     }
 
     @Operation(summary = "권한등록")
-    @PostMapping(value = "/insert")
+    @PostMapping(value = "")
     public ResponseEntity<?> insertRole(@RequestBody RoleInsertDTO dto) throws NoSuchAlgorithmException {
         ResponseDTO responseDTO = roleService.insert(dto);
 
@@ -49,7 +49,7 @@ public class RoleController {
     }
 
     @Operation(summary = "권한수정")
-    @PutMapping(value = "/update")
+    @PutMapping(value = "")
     public ResponseEntity<?> updateRole(@RequestParam("roleSeq") Long roleSeq, @RequestBody RoleUpdateDTO dto) throws NoSuchAlgorithmException {
         dto.setRoleSeq(roleSeq);
         ResponseDTO responseDTO = roleService.update(dto);
@@ -58,7 +58,7 @@ public class RoleController {
     }
 
     @Operation(summary = "권한삭제")
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "")
     public ResponseEntity<?> deleteRole(@RequestParam("roleSeq") Long roleSeq) throws NoSuchAlgorithmException {
         ResponseDTO responseDTO = roleService.delete(roleSeq);
 

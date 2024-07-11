@@ -27,7 +27,7 @@ import java.util.Optional;
 @Tag(name = "Member")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/api/member/")
+@RequestMapping(path = "/api/member")
 public class MemberController {
 
     @Autowired
@@ -52,7 +52,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원등록")
-    @PostMapping(value = "/insert")
+    @PostMapping(value = "")
     public ResponseEntity<?> insertMember(@RequestBody MemberInsertDTO dto) throws NoSuchAlgorithmException {
         dto.setPassword(SHA256.encrypt(dto.getPassword()));
         ResponseDTO responseDTO = memberService.insert(dto);
@@ -68,9 +68,9 @@ public class MemberController {
     }
 
     @Operation(summary = "회원수정")
-    @PutMapping(value = "/update")
-    public ResponseEntity<?> updateMember(@RequestParam("memberSeq") Long memberSeq, @RequestBody MemberUpdateDTO dto) throws NoSuchAlgorithmException {
-        dto.setMemberSeq(memberSeq);
+    @PutMapping(value = "")
+    public ResponseEntity<?> updateMember(@RequestBody MemberUpdateDTO dto) throws NoSuchAlgorithmException {
+        dto.setMemberSeq(dto.getMemberSeq());
         dto.setPassword(SHA256.encrypt(dto.getPassword()));
         ResponseDTO responseDTO = memberService.update(dto);
 
@@ -78,7 +78,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원삭제")
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "")
     public ResponseEntity<?> deleteMember(@RequestParam("memberSeq") Long memberSeq) throws NoSuchAlgorithmException {
         ResponseDTO responseDTO = memberService.delete(memberSeq);
 
@@ -95,7 +95,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원권한등록")
-    @PostMapping(value = "/mapping/insert")
+    @PostMapping(value = "/mapping")
     public ResponseEntity<?> insertMemberRole(@RequestBody MemberRoleDTO dto) throws NoSuchAlgorithmException {
         Optional<Member> m = memberService.findById(dto.getMemberSeq());
         ResponseDTO responseDTO = new ResponseDTO();
@@ -110,7 +110,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원권한삭제")
-    @DeleteMapping(value = "/mapping/delete")
+    @DeleteMapping(value = "/mapping")
     public ResponseEntity<?> deleteMemberRole(@RequestBody MemberRoleDTO dto) throws NoSuchAlgorithmException {
         Optional<Member> m = memberService.findById(dto.getMemberSeq());
         ResponseDTO responseDTO = new ResponseDTO();

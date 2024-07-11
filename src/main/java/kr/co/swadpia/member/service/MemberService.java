@@ -82,9 +82,8 @@ public class MemberService {
 	public ResponseDTO insert(MemberInsertDTO dto) {
 		Member member = new Member();
 		BeanUtils.copyProperties(dto, member);
-		ResponseDTO responseDTO = validationCheck(member);
+		ResponseDTO responseDTO = validationCheck(member, "I");
 		if ("".equals(responseDTO.getResultCode()) || responseDTO.getResultCode() == null) {
-			member.setUseYn("Y");
 			memberRepository.save(member);
 			responseDTO.setResultCode(ResultCode.INSERT.getName());
 			responseDTO.setMsg(ResultCode.INSERT.getValue());
@@ -100,9 +99,8 @@ public class MemberService {
 		if(m.isPresent()){
 			Member member = new Member();
 			BeanUtils.copyProperties(dto, member);
-			responseDTO = validationCheck(member);
+			responseDTO = validationCheck(member, "U");
 			if ("".equals(responseDTO.getResultCode()) || responseDTO.getResultCode() == null) {
-				member.setUseYn("Y");
 				memberRepository.save(member);
 				responseDTO.setResultCode(ResultCode.UPDATE.getName());
 				responseDTO.setMsg(ResultCode.UPDATE.getValue());
@@ -234,10 +232,10 @@ public class MemberService {
 		return dto;
 	}
 
-	public ResponseDTO validationCheck(Member member) {
+	public ResponseDTO validationCheck(Member member, String type) {
 		ResponseDTO responseDTO = new ResponseDTO();
 		List<Member> list = memberRepository.findByMemberId(member.getMemberId()).stream().toList();
-		if (list.size() > 0) {
+		if ("I".equals(type) && list.size() > 0) {
 			responseDTO.setResultCode(ResultCode.NOT_INSERT_SAME_MEMBER_ID.getName());
 			responseDTO.setMsg(ResultCode.NOT_INSERT_SAME_MEMBER_ID.getValue());
 		} else if (!RegexUtils.isValidEmail(member.getEmail())) {
