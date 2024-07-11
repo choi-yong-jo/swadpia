@@ -1,22 +1,17 @@
 package kr.co.swadpia.member.service;
 
 import kr.co.swadpia.common.constant.ResultCode;
-import kr.co.swadpia.common.dto.LoginParamDTO;
 import kr.co.swadpia.common.dto.ResponseDTO;
-import kr.co.swadpia.common.dto.SessionDTO;
-import kr.co.swadpia.common.utility.RegexUtils;
 import kr.co.swadpia.member.dto.RoleInsertDTO;
 import kr.co.swadpia.member.dto.RoleUpdateDTO;
-import kr.co.swadpia.member.entity.Member;
 import kr.co.swadpia.member.entity.Role;
-import kr.co.swadpia.repository.jpa.MemberRepository;
 import kr.co.swadpia.repository.jpa.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +27,8 @@ public class RoleService {
 	
 	public List<Role> findAll() {
 		List<Role> roles = new ArrayList<>();
-		roleRepository.findAll().forEach(e -> roles.add(e));
+//		roleRepository.findAll(Sort.by(Sort.Direction.DESC, "roleSeq")).forEach(e -> roles.add(e));
+		roleRepository.findByUseYnOrderByRoleSeq("Y").forEach(e -> roles.add((Role) e));
 		return roles;
 	}
 

@@ -2,12 +2,9 @@ package kr.co.swadpia.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kr.co.swadpia.common.dto.LoginParamDTO;
 import kr.co.swadpia.common.dto.ResponseDTO;
-import kr.co.swadpia.common.utility.SHA256;
 import kr.co.swadpia.member.dto.RoleInsertDTO;
 import kr.co.swadpia.member.dto.RoleUpdateDTO;
-import kr.co.swadpia.member.entity.Member;
 import kr.co.swadpia.member.entity.Role;
 import kr.co.swadpia.member.service.MemberService;
 import kr.co.swadpia.member.service.RoleService;
@@ -61,7 +58,7 @@ public class RoleController {
     }
 
     @Operation(summary = "권한삭제")
-    @PutMapping(value = "/delete")
+    @DeleteMapping(value = "/delete")
     public ResponseEntity<?> deleteRole(@RequestParam("roleSeq") Long roleSeq) throws NoSuchAlgorithmException {
         ResponseDTO responseDTO = roleService.delete(roleSeq);
 

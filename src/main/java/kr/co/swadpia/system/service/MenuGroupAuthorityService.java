@@ -29,12 +29,6 @@ public class MenuGroupAuthorityService {
 	@Transactional
 	public MenuGroupAuthorityDTO insertMenuGroupAuthority(SessionDTO sessionDTO, MenuGroupAuthorityParam menuGroupAuthorityParam) {
 
-		/*
-		 * 필수 role 생성
-		 * 선택- menu, employee
-		 */
-		Role insertRole = new Role("",menuGroupAuthorityParam.getMenuGroupAuthorityName(),"");
-
 		MenuGroupAuthority saveEntity = menuGroupAuthorityRepository.save(MenuGroupAuthority.of(menuGroupAuthorityParam));
 
 		return PlannCodesBeanUtil.copyPropertiesReturnTargetClass(saveEntity,new MenuGroupAuthorityDTO());

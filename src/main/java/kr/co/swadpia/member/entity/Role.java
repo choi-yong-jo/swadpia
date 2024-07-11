@@ -3,7 +3,6 @@ package kr.co.swadpia.member.entity;
 import jakarta.persistence.*;
 import kr.co.swadpia.entity.AuditingAt;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -23,19 +22,4 @@ public class Role extends AuditingAt {
 
     private String useYn;
 
-    /**
-     * Role const
-     * @param roleId 값
-     * @param name 이름
-     * @param description 설명
-     */
-    public Role(String roleId, String name, String description) {
-        this.roleId = roleId;
-        this.name = name;
-        this.description = description;
-    }
-
-    public Role() {
-
-    }
 }

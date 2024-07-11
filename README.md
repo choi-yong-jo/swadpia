@@ -20,6 +20,7 @@ create schema if not exists admin authorization postgres;
 
 
 -- 회원 테이블
+
 CREATE TABLE "admin"."member" (
   member_seq bigserial NOT NULL,
   member_id varchar(20) NOT NULL,
@@ -36,6 +37,7 @@ CREATE TABLE "admin"."member" (
 );
 
 -- 권한 테이블
+
 CREATE TABLE "admin"."role" (
   role_seq bigserial NOT NULL,
   role_id varchar(20) NOT NULL,
@@ -49,6 +51,7 @@ CREATE TABLE "admin"."role" (
 
 
 -- 회원-권한 매핑 테이블
+
 CREATE TABLE "admin"."member_role" (
   member_role_seq bigserial NOT NULL,
   member_id varchar(20) NOT NULL,

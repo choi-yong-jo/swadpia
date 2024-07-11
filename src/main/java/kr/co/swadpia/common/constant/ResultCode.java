@@ -10,6 +10,8 @@ public enum ResultCode {
     INSERT("Insert", "등록 완료되었습니다."),
     UPDATE("Update", "수정 완료되었습니다."),
     DELETE("Delete", "삭제되었습니다."),
+    NOT_INSERT_MEMBER_ROLE_EXIST("Not Insert Member Role Exist", "추가할 회원 권한 대상이 존재합니다."),
+    NOT_DELETE_MEMBER_ROLE("Not Delete Member Role", "삭제할 회원 권한 대상이 없습니다."),
     NOT_FOUND_MEMBER("Not Found Member", "회원 정보를 찾을 수 없습니다."),
     NOT_FOUND_ROLE("Not Found Role", "권한 정보를 찾을 수 없습니다."),
     NOT_VALIDATED("Not Validated", "데이터 전달 값이 유효하지 않습니다."),

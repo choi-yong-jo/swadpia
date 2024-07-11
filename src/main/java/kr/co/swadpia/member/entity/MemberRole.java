@@ -15,13 +15,4 @@ public class MemberRole extends AuditingAt {
     private Long memberSeq;
     private Long roleSeq;
 
-    @Builder
-    public MemberRole(Long memberSeq, Long roleSeq) {
-        this.memberSeq = memberSeq;
-        this.roleSeq = roleSeq;
-    }
-
-    public MemberRole() {
-
-    }
 }

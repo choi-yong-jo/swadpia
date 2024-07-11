@@ -3,11 +3,8 @@ package kr.co.swadpia.member.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import kr.co.swadpia.common.constant.ResultCode;
-import kr.co.swadpia.common.dto.LoginParamDTO;
 import kr.co.swadpia.common.dto.ResponseDTO;
-import kr.co.swadpia.common.dto.SessionDTO;
 import kr.co.swadpia.common.utility.RegexUtils;
-import kr.co.swadpia.common.utility.SHA256;
 import kr.co.swadpia.member.dto.LoginDTO;
 import kr.co.swadpia.member.dto.MemberInsertDTO;
 import kr.co.swadpia.member.dto.MemberRoleDTO;
@@ -21,12 +18,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,10 +36,14 @@ public class MemberService {
 
 	@Autowired
 	private MemberRoleRepository memberRoleRepository;
+
+	@Autowired
+	private RoleService roleService;
 	
 	public List<Member> findAll() {
 		List<Member> members = new ArrayList<>();
-		memberRepository.findAll().forEach(e -> members.add(e));
+//		memberRepository.findAll().forEach(e -> members.add(e));
+		memberRepository.findByUseYn("Y").forEach(e -> members.add((Member) e));
 		return members;
 	}
 
@@ -133,29 +131,76 @@ public class MemberService {
 		return responseDTO;
 	}
 
+	public List<MemberRole> mappingById(Long memberSeq) {
+		List<MemberRole> roles = memberRoleRepository.findByMemberSeqOrderByRoleSeq(memberSeq);
+		return roles;
+	}
+
 	@Transactional("transactionManager")
-	public ResponseDTO insertMemberRole(long memberSeq, MemberRoleDTO dto) {
+	public ResponseDTO insertMemberRole(MemberRoleDTO dto) {
 		ResponseDTO responseDTO = new ResponseDTO();
 		String[] role = dto.getRoles().split(",");
+		List<MemberRole> roles = memberRoleRepository.findByMemberSeqOrderByRoleSeq(dto.getMemberSeq());
+		int insCnt = 0;
 		for(int i=0 ; i<role.length; i++) {
-			MemberRole memberRole = new MemberRole();
-			memberRole.setMemberSeq(memberSeq);
-			memberRole.setRoleSeq(Long.valueOf(role[i]));
-			memberRoleRepository.save(memberRole);
+			boolean existedRole = true;
+			boolean roleCheck = false;
+			if (roles.size() > 0) {
+				for (int j=0; j<roles.size(); j++) {
+					Long insRole = Long.valueOf(role[i]);
+					if(existedRole) {
+						existedRole = (insRole == roles.get(j).getRoleSeq()) ? false : true;
+					}
+				}
+			}
+			List<Role> list = roleService.findAll();
+			for(int k=0; k<list.size(); k++) {
+				if (!roleCheck) {
+					roleCheck = (list.get(k).getRoleSeq() == Long.valueOf(role[i])) ? true : false;
+				}
+			}
+			if (existedRole && roleCheck) {
+				MemberRole memberRole = new MemberRole();
+				memberRole.setMemberSeq(dto.getMemberSeq());
+				memberRole.setRoleSeq(Long.valueOf(role[i]));
+				memberRoleRepository.save(memberRole);
+				insCnt++;
+			}
+		}
+
+		if (insCnt > 0) {
+			responseDTO.setResultCode(ResultCode.INSERT.getName());
+			responseDTO.setMsg(ResultCode.INSERT.getValue());
+		} else {
+			responseDTO.setResultCode(ResultCode.NOT_INSERT_MEMBER_ROLE_EXIST.getName());
+			responseDTO.setMsg(ResultCode.NOT_INSERT_MEMBER_ROLE_EXIST.getValue());
 		}
 
 		return responseDTO;
 	}
 
 	@Transactional("transactionManager")
-	public ResponseDTO deleteMemberRole(long memberSeq, MemberRoleDTO dto) {
+	public ResponseDTO deleteMemberRole(MemberRoleDTO dto) {
 		ResponseDTO responseDTO = new ResponseDTO();
 		String[] role = dto.getRoles().split(",");
+		int delCnt = 0;
 		for(int i=0 ; i<role.length; i++) {
-			MemberRole memberRole = new MemberRole();
-			memberRole.setMemberSeq(memberSeq);
-			memberRole.setRoleSeq(Long.valueOf(role[i]));
-			memberRoleRepository.delete(memberRole);
+			Optional<MemberRole> mr = memberRoleRepository.findByMemberSeqAndRoleSeq(dto.getMemberSeq(), Long.valueOf(role[i]));
+			if(!mr.isEmpty()) {
+				MemberRole memberRole = new MemberRole();
+				memberRole.setMemberSeq(dto.getMemberSeq());
+				memberRole.setRoleSeq(Long.valueOf(role[i]));
+				memberRoleRepository.deleteById(mr.get().getMemberRoleSeq());
+				delCnt++;
+			}
+		}
+
+		if (delCnt > 0) {
+			responseDTO.setResultCode(ResultCode.DELETE.getName());
+			responseDTO.setMsg(ResultCode.DELETE.getValue());
+		} else {
+			responseDTO.setResultCode(ResultCode.NOT_DELETE_MEMBER_ROLE.getName());
+			responseDTO.setMsg(ResultCode.NOT_DELETE_MEMBER_ROLE.getValue());
 		}
 
 		return responseDTO;

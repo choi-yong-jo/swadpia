@@ -1,6 +1,5 @@
 package kr.co.swadpia.member.dto;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data

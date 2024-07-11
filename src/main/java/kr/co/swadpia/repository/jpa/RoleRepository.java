@@ -1,6 +1,5 @@
 package kr.co.swadpia.repository.jpa;
 
-import kr.co.swadpia.member.entity.Member;
 import kr.co.swadpia.member.entity.Role;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
@@ -14,4 +13,5 @@ public interface RoleRepository extends GenericRepository<Role>, QuerydslPredica
 
 	Optional<Role> findByRoleIdAndName(String roleId, String roleNm);
 
+	Iterable<Object> findByUseYnOrderByRoleSeq(String useYn);
 }
