@@ -54,8 +54,8 @@ CREATE TABLE "admin"."role" (
 
 CREATE TABLE "admin"."member_role" (
   member_role_seq bigserial NOT NULL,
-  member_id varchar(20) NOT NULL,
-  role_id varchar(20) NULL,
+  member_seq bigserial NOT NULL,
+  role_seq bigserial NULL,
   created_at timestamp(6) NULL,
   updated_at timestamp(6) NULL,
   CONSTRAINT member_role_pkey PRIMARY KEY (member_role_seq)
