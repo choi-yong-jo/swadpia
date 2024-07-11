@@ -4,7 +4,7 @@ package kr.co.swadpia.cron;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import kr.co.swadpia.common.service.MailService;
-import kr.co.swadpia.entity.EmailQueue;
+import kr.co.swadpia.common.entity.EmailQueue;
 import kr.co.swadpia.repository.jpa.EmailQueueRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

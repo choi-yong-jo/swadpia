@@ -1,19 +1,18 @@
-package kr.co.swadpia.dto.common;
-
-import org.springdoc.core.annotations.ParameterObject;
+package kr.co.swadpia.system.dto.common;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Data;
+import org.springdoc.core.annotations.ParameterObject;
 
 @Data
 @ParameterObject
-public class CommonCodeCondition {
+public class CommonGroupCodeCondition {
 
 	@Parameter(description = "코드", example = "00")
-	String code;
+	String groupCode;
 
 	@Parameter(description = "코드이름", example = "00")
-	String codeName;
+	String groupName;
 
 	@Parameter(description = "그룹코드아이디", example = "0")
 	Long groupId;

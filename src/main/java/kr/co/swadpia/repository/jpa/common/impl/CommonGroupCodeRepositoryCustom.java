@@ -1,7 +1,7 @@
 package kr.co.swadpia.repository.jpa.common.impl;
 
-import kr.co.swadpia.dto.common.CommonGroupCodeCondition;
-import kr.co.swadpia.dto.common.CommonGroupCodeDTO;
+import kr.co.swadpia.system.dto.common.CommonGroupCodeCondition;
+import kr.co.swadpia.system.dto.common.CommonGroupCodeDTO;
 
 import java.util.List;
 

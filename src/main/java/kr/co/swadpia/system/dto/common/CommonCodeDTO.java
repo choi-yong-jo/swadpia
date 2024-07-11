@@ -1,6 +1,4 @@
-package kr.co.swadpia.dto.common;
-
-import java.util.List;
+package kr.co.swadpia.system.dto.common;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package kr.co.swadpia.config.auth;
 
 import jakarta.annotation.PostConstruct;
-import kr.co.swadpia.entity.system.Menu;
+import kr.co.swadpia.common.entity.Menu;
 import kr.co.swadpia.repository.jpa.system.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package kr.co.swadpia.entity;
+package kr.co.swadpia.common.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

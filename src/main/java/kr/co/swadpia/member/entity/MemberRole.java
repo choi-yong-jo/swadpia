@@ -1,7 +1,7 @@
 package kr.co.swadpia.member.entity;
 
 import jakarta.persistence.*;
-import kr.co.swadpia.entity.AuditingAt;
+import kr.co.swadpia.common.entity.AuditingAt;
 import lombok.*;
 
 @Entity

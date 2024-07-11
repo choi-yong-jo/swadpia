@@ -1,6 +1,6 @@
 package kr.co.swadpia.repository.jpa;
 
-import kr.co.swadpia.entity.ExternalAPIHistory;
+import kr.co.swadpia.common.entity.ExternalAPIHistory;
 import org.springframework.stereotype.Repository;
 
 @Repository

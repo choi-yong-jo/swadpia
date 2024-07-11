@@ -1,4 +1,4 @@
-package kr.co.swadpia.dto.common;
+package kr.co.swadpia.system.dto.common;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

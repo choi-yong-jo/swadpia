@@ -1,10 +1,9 @@
 package kr.co.swadpia.system.service;
 
 import kr.co.swadpia.common.dto.SessionDTO;
-import kr.co.swadpia.dto.system.MenuGroupAuthorityDTO;
-import kr.co.swadpia.dto.system.MenuGroupAuthorityParam;
-import kr.co.swadpia.member.entity.Role;
-import kr.co.swadpia.entity.system.MenuGroupAuthority;
+import kr.co.swadpia.system.dto.system.MenuGroupAuthorityDTO;
+import kr.co.swadpia.system.dto.system.MenuGroupAuthorityParam;
+import kr.co.swadpia.common.entity.MenuGroupAuthority;
 import kr.co.swadpia.repository.jpa.system.MenuGroupAuthorityRepository;
 import kr.co.swadpia.common.utility.PlannCodesBeanUtil;
 import lombok.RequiredArgsConstructor;

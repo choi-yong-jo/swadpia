@@ -1,6 +1,6 @@
 package kr.co.swadpia.repository.jpa;
 
-import kr.co.swadpia.entity.Admin;
+import kr.co.swadpia.common.entity.Admin;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,8 @@
 package kr.co.swadpia.system.service;
 
-import kr.co.swadpia.dto.common.CommonGroupCodeCondition;
-import kr.co.swadpia.dto.common.CommonGroupCodeDTO;
-import kr.co.swadpia.dto.common.CommonGroupCodeParam;
+import kr.co.swadpia.system.dto.common.CommonGroupCodeCondition;
+import kr.co.swadpia.system.dto.common.CommonGroupCodeDTO;
+import kr.co.swadpia.system.dto.common.CommonGroupCodeParam;
 import kr.co.swadpia.system.entity.CommonGroupCode;
 import kr.co.swadpia.repository.jpa.common.CommonGroupCodeRepository;
 import lombok.RequiredArgsConstructor;

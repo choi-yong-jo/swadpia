@@ -2,8 +2,8 @@ package kr.co.swadpia.repository.jpa.common.impl;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.swadpia.dto.common.CommonCodeCondition;
-import kr.co.swadpia.dto.common.CommonCodeDTO;
+import kr.co.swadpia.system.dto.common.CommonCodeCondition;
+import kr.co.swadpia.system.dto.common.CommonCodeDTO;
 import kr.co.swadpia.system.entity.CommonCode;
 import org.springframework.util.ObjectUtils;
 

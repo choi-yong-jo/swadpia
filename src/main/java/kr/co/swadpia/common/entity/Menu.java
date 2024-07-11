@@ -1,4 +1,4 @@
-package kr.co.swadpia.entity.system;
+package kr.co.swadpia.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

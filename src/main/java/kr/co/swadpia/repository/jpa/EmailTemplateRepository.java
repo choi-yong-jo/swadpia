@@ -2,7 +2,7 @@ package kr.co.swadpia.repository.jpa;
 
 
 import kr.co.swadpia.common.constant.EmailType;
-import kr.co.swadpia.entity.EmailTemplate;
+import kr.co.swadpia.common.entity.EmailTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

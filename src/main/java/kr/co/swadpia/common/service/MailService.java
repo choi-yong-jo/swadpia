@@ -4,7 +4,7 @@ package kr.co.swadpia.common.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import kr.co.swadpia.common.constant.EmailType;
-import kr.co.swadpia.entity.EmailQueue;
+import kr.co.swadpia.common.entity.EmailQueue;
 import kr.co.swadpia.repository.jpa.EmailQueueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

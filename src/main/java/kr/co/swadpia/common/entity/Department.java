@@ -1,7 +1,6 @@
-package kr.co.swadpia.entity.system;
+package kr.co.swadpia.common.entity;
 
 import jakarta.persistence.*;
-import kr.co.swadpia.entity.AuditingAtByCU;
 import lombok.Data;
 import org.hibernate.annotations.Comment;
 

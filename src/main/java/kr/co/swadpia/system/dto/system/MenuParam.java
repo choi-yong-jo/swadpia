@@ -1,10 +1,9 @@
-package kr.co.swadpia.dto.system;
+package kr.co.swadpia.system.dto.system;
 
 import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class MenuDTO {
+public class MenuParam {
 
 	@Schema(description = "메뉴ID",
 		defaultValue = "1",
@@ -39,12 +38,12 @@ public class MenuDTO {
 		name = "parentMenuParamDTO",
 		type = "MenuParamDTO",
 		requiredMode = Schema.RequiredMode.AUTO)
-	private MenuDTO parentMenuParamDTO;
+	private MenuParam parentMenuParamDTO;
 
 	@Schema(description = "하위메뉴정보",
 		defaultValue = "",
 		name = "childrenParamDTO",
 		type = "List MenuParamDTO",
 		requiredMode = Schema.RequiredMode.AUTO)
-	private List<MenuDTO> childrenParamDTO;
+	private List<MenuParam> childrenParamDTO;
 }

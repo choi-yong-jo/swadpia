@@ -1,7 +1,7 @@
-package kr.co.swadpia.entity.system;
+package kr.co.swadpia.common.entity;
 
 import jakarta.persistence.*;
-import kr.co.swadpia.dto.system.MenuGroupAuthorityParam;
+import kr.co.swadpia.system.dto.system.MenuGroupAuthorityParam;
 import lombok.Data;
 import org.hibernate.annotations.Comment;
 

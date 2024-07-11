@@ -1,6 +1,6 @@
 package kr.co.swadpia.repository.jpa;
 
-import kr.co.swadpia.entity.EmailQueue;
+import kr.co.swadpia.common.entity.EmailQueue;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

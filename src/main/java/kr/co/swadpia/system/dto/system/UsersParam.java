@@ -1,4 +1,4 @@
-package kr.co.swadpia.dto.system;
+package kr.co.swadpia.system.dto.system;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

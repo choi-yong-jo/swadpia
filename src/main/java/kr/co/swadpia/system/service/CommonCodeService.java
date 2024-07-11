@@ -1,8 +1,8 @@
 package kr.co.swadpia.system.service;
 
-import kr.co.swadpia.dto.common.CommonCodeCondition;
-import kr.co.swadpia.dto.common.CommonCodeDTO;
-import kr.co.swadpia.dto.common.CommonCodeParam;
+import kr.co.swadpia.system.dto.common.CommonCodeCondition;
+import kr.co.swadpia.system.dto.common.CommonCodeDTO;
+import kr.co.swadpia.system.dto.common.CommonCodeParam;
 import kr.co.swadpia.system.entity.CommonCode;
 import kr.co.swadpia.system.entity.CommonGroupCode;
 import kr.co.swadpia.repository.jpa.common.CommonCodeRepository;
