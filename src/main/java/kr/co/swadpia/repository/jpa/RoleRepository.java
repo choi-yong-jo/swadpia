@@ -14,4 +14,6 @@ public interface RoleRepository extends GenericRepository<Role>, QuerydslPredica
 	Optional<Role> findByRoleIdAndName(String roleId, String roleNm);
 
 	Iterable<Object> findByUseYnOrderByRoleSeq(String useYn);
+
+	Optional<Role> findByRoleSeq(Long roleSeq);
 }

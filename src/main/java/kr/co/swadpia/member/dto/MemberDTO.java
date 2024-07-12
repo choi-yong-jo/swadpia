@@ -4,12 +4,13 @@ import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
-public class MemberUpdateDTO {
-
-	private Long memberSeq;
+public class MemberDTO {
 
 	@Column(length = 20)
 	private String memberId;
+
+	@Column(length = 20)
+	private String teamId;
 
 	@Column(length = 20)
 	private String name;

@@ -1,7 +1,6 @@
 package kr.co.swadpia.member.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import kr.co.swadpia.common.entity.AuditingAt;
 import lombok.Data;
 import org.hibernate.annotations.Comment;
@@ -21,7 +20,7 @@ public class Member extends AuditingAt {
     @Comment("회원ID")
     private String memberId;
 
-    @Column(length = 20, nullable = true)
+    @Column(length = 20, nullable = false)
     @Comment("부서ID")
     private String teamId;
 

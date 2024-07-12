@@ -2,15 +2,13 @@ package kr.co.swadpia.member.service;
 
 import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
-import kr.co.swadpia.member.dto.RoleInsertDTO;
-import kr.co.swadpia.member.dto.RoleUpdateDTO;
+import kr.co.swadpia.member.dto.RoleDTO;
 import kr.co.swadpia.member.entity.Role;
 import kr.co.swadpia.repository.jpa.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,13 +25,12 @@ public class RoleService {
 	
 	public List<Role> findAll() {
 		List<Role> roles = new ArrayList<>();
-//		roleRepository.findAll(Sort.by(Sort.Direction.DESC, "roleSeq")).forEach(e -> roles.add(e));
 		roleRepository.findByUseYnOrderByRoleSeq("Y").forEach(e -> roles.add((Role) e));
 		return roles;
 	}
 
 
-	public ResponseDTO insert(RoleInsertDTO dto) {
+	public ResponseDTO insert(RoleDTO dto) {
 		Role role = new Role();
 		BeanUtils.copyProperties(dto, role);
 		ResponseDTO responseDTO = validationCheck(role);
@@ -46,20 +43,20 @@ public class RoleService {
 		return responseDTO;
 	}
 
-	public ResponseDTO update(RoleUpdateDTO dto) {
-		Optional<Role> r = roleRepository.findById(dto.getRoleSeq());
+	public ResponseDTO update(Long roleSeq, RoleDTO dto) {
+		Optional<Role> r = roleRepository.findByRoleSeq(roleSeq);
 		ResponseDTO responseDTO = new ResponseDTO();
 		if(r.isPresent()){
 			Role role = new Role();
 			BeanUtils.copyProperties(dto, role);
-			responseDTO = validationCheck(role);
+			role.setRoleSeq(roleSeq);
 			if ("".equals(responseDTO.getResultCode()) || responseDTO.getResultCode() == null) {
 				roleRepository.save(role);
 				responseDTO.setResultCode(ResultCode.UPDATE.getName());
 				responseDTO.setMsg(ResultCode.UPDATE.getValue());
 			} else {
-				responseDTO.setResultCode(ResultCode.NOT_FOUND_ROLE.getName());
-				responseDTO.setMsg(ResultCode.NOT_FOUND_ROLE.getValue());
+				responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
+				responseDTO.setMsg(ResultCode.NOT_FOUND_INFO.getValue());
 			}
 		}
 
@@ -67,7 +64,7 @@ public class RoleService {
 	}
 
 	public ResponseDTO delete(long roleSeq) {
-		Optional<Role> r = roleRepository.findById(roleSeq);
+		Optional<Role> r = roleRepository.findByRoleSeq(roleSeq);
 		ResponseDTO responseDTO = new ResponseDTO();
 		if(r.isPresent()){
 			Role role = r.get();
@@ -76,8 +73,8 @@ public class RoleService {
 			responseDTO.setResultCode(ResultCode.DELETE.getName());
 			responseDTO.setMsg(ResultCode.DELETE.getValue());
 		} else {
-			responseDTO.setResultCode(ResultCode.NOT_FOUND_ROLE.getName());
-			responseDTO.setMsg(ResultCode.NOT_FOUND_ROLE.getValue());
+			responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
+			responseDTO.setMsg(ResultCode.NOT_FOUND_INFO.getValue());
 		}
 
 		return responseDTO;

@@ -6,6 +6,8 @@ import io.minio.MinioClient;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidPortException;
 import jakarta.xml.bind.DatatypeConverter;
+import kr.co.swadpia.common.constant.ResultCode;
+import kr.co.swadpia.common.dto.ResponseDTO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -433,5 +435,18 @@ public class CommonUtilService {
         return hostname;
     }
 
+    public ResponseDTO selectObject(Object obj) {
+        ResponseDTO dto = new ResponseDTO();
+        if (obj == null) {
+            dto.setResultCode(ResultCode.EMPTY.getName());
+            dto.setMsg(ResultCode.EMPTY.getValue());
+        } else {
+            dto.setResultCode(ResultCode.SUCCESS.getName());
+            dto.setMsg(ResultCode.SUCCESS.getValue());
+            dto.setRes(obj);
+        }
+
+        return dto;
+    }
 
 }

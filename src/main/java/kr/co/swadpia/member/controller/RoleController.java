@@ -3,8 +3,8 @@ package kr.co.swadpia.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.swadpia.common.dto.ResponseDTO;
-import kr.co.swadpia.member.dto.RoleInsertDTO;
-import kr.co.swadpia.member.dto.RoleUpdateDTO;
+import kr.co.swadpia.common.service.CommonUtilService;
+import kr.co.swadpia.member.dto.RoleDTO;
 import kr.co.swadpia.member.entity.Role;
 import kr.co.swadpia.member.service.MemberService;
 import kr.co.swadpia.member.service.RoleService;
@@ -31,34 +31,36 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
+    @Autowired
+    CommonUtilService commonUtilService;
+
     @Operation(summary = "권한조회")
     @GetMapping(value = "/list")
     public ResponseEntity<?> getRoles() {
         List<Role> list = roleService.findAll();
-        ResponseDTO responseDTO = memberService.selectObject(list);
+        ResponseDTO responseDTO = commonUtilService.selectObject(list);
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "권한등록")
-    @PostMapping(value = "")
-    public ResponseEntity<?> insertRole(@RequestBody RoleInsertDTO dto) throws NoSuchAlgorithmException {
+    @PostMapping
+    public ResponseEntity<?> insertRole(@RequestBody RoleDTO dto) {
         ResponseDTO responseDTO = roleService.insert(dto);
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "권한수정")
-    @PutMapping(value = "")
-    public ResponseEntity<?> updateRole(@RequestParam("roleSeq") Long roleSeq, @RequestBody RoleUpdateDTO dto) throws NoSuchAlgorithmException {
-        dto.setRoleSeq(roleSeq);
-        ResponseDTO responseDTO = roleService.update(dto);
+    @PatchMapping
+    public ResponseEntity<?> updateRole(@RequestParam("roleSeq") Long roleSeq, @RequestBody RoleDTO dto) {
+        ResponseDTO responseDTO = roleService.update(roleSeq, dto);
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "권한삭제")
-    @DeleteMapping(value = "")
+    @DeleteMapping
     public ResponseEntity<?> deleteRole(@RequestParam("roleSeq") Long roleSeq) throws NoSuchAlgorithmException {
         ResponseDTO responseDTO = roleService.delete(roleSeq);
 

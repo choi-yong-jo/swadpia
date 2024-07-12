@@ -21,4 +21,6 @@ public interface MemberRepository extends GenericRepository<Member> {
     Optional<Member> findByEmailAndName(String email, String name);
 
     Iterable<Object> findByUseYn(String useYn);
+
+    Optional<Member> findByMemberSeq(Long memberSeq);
 }

@@ -2,18 +2,17 @@ package kr.co.swadpia.member.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
 import kr.co.swadpia.common.utility.RegexUtils;
-import kr.co.swadpia.member.dto.LoginDTO;
-import kr.co.swadpia.member.dto.MemberInsertDTO;
-import kr.co.swadpia.member.dto.MemberRoleDTO;
-import kr.co.swadpia.member.entity.Member;
-import kr.co.swadpia.member.dto.MemberUpdateDTO;
-import kr.co.swadpia.member.entity.MemberRole;
-import kr.co.swadpia.member.entity.Role;
+import kr.co.swadpia.member.entity.*;
+import kr.co.swadpia.member.dto.*;
 import kr.co.swadpia.repository.jpa.MemberRepository;
 import kr.co.swadpia.repository.jpa.MemberRoleRepository;
+import kr.co.swadpia.team.entity.QTeam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static kr.co.swadpia.config.auth.JwtConstants.*;
 
@@ -39,16 +37,64 @@ public class MemberService {
 
 	@Autowired
 	private RoleService roleService;
+
+	@Autowired
+	EntityManager em;
+
+	JPAQueryFactory queryFactory;
+
+	public List<Member> selectMember(String memberId, String teamId) {
+		List<Member> list = new ArrayList<>();
+		QMember m = QMember.member;
+		queryFactory = new JPAQueryFactory(em);
+		list = queryFactory
+				.selectFrom(m)
+				.where(
+						m.memberId.eq(memberId)
+						, m.teamId.eq(teamId)
+				).fetch().stream().toList();
+
+		return list;
+	}
 	
 	public List<Member> findAll() {
 		List<Member> members = new ArrayList<>();
 //		memberRepository.findAll().forEach(e -> members.add(e));
 		memberRepository.findByUseYn("Y").forEach(e -> members.add((Member) e));
+//		members = selectMember("cyjo1207","develop");
 		return members;
 	}
 
-	public Optional<Member> findById(long mbrNo){
-		Optional<Member> member = memberRepository.findById(mbrNo);
+	public Object getMemberDetail(long memberSeq){
+		List<Tuple> info;
+		QMember m = QMember.member;
+		QTeam t = QTeam.team;
+		queryFactory = new JPAQueryFactory(em);
+		info = queryFactory.from(m)
+				.select(m.memberId, t.teamNm, m.name, m.email, m.mobile)
+				.innerJoin(t)
+				.on(t.teamId.eq(m.teamId))
+				.where(
+						m.memberSeq.eq(memberSeq)
+				).fetch().stream().toList();
+
+		log.info(info.toString());
+		log.info(info.get(0).toString());
+
+		return info.get(0);
+	}
+
+	public Optional<Member> findById(long memberSeq){
+		Optional<Member> member;
+		QMember m = QMember.member;
+		queryFactory = new JPAQueryFactory(em);
+		member = Optional.ofNullable(
+				queryFactory.selectFrom(m)
+                .where(
+                	m.memberSeq.eq(memberSeq)
+                ).fetchOne());
+
+//		Optional<Member> member = memberRepository.findById(memberSeq);
 		return member;
 	}
 
@@ -57,8 +103,8 @@ public class MemberService {
 		String password = m.get().getPassword();
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (m.isEmpty()) {
-			responseDTO.setResultCode(ResultCode.NOT_FOUND_MEMBER.getName());
-			responseDTO.setMsg(ResultCode.NOT_FOUND_MEMBER.getValue());
+			responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
+			responseDTO.setMsg(ResultCode.NOT_FOUND_INFO.getValue());
 		} else if (!password.equals(dto.getPassword())) {
 			responseDTO.setResultCode(ResultCode.NOT_VALIDATED_PASSWORD.getName());
 			responseDTO.setMsg(ResultCode.NOT_VALIDATED_PASSWORD.getValue());
@@ -79,7 +125,7 @@ public class MemberService {
 	}
 
 	@Transactional("transactionManager")
-	public ResponseDTO insert(MemberInsertDTO dto) {
+	public ResponseDTO insert(MemberDTO dto) {
 		Member member = new Member();
 		BeanUtils.copyProperties(dto, member);
 		ResponseDTO responseDTO = validationCheck(member, "I");
@@ -93,12 +139,13 @@ public class MemberService {
 	}
 
 	@Transactional("transactionManager")
-	public ResponseDTO update(MemberUpdateDTO dto) {
-		Optional<Member> m = memberRepository.findById(dto.getMemberSeq());
+	public ResponseDTO update(Long memberSeq, MemberDTO dto) {
+		Optional<Member> m = memberRepository.findByMemberSeq(memberSeq);
 		ResponseDTO responseDTO = new ResponseDTO();
-		if(m.isPresent()){
+		if(m.isPresent()) {
 			Member member = new Member();
 			BeanUtils.copyProperties(dto, member);
+			member.setMemberSeq(memberSeq);
 			responseDTO = validationCheck(member, "U");
 			if ("".equals(responseDTO.getResultCode()) || responseDTO.getResultCode() == null) {
 				memberRepository.save(member);
@@ -106,8 +153,8 @@ public class MemberService {
 				responseDTO.setMsg(ResultCode.UPDATE.getValue());
 			}
 		} else {
-			responseDTO.setResultCode(ResultCode.NOT_FOUND_MEMBER.getName());
-			responseDTO.setMsg(ResultCode.NOT_FOUND_MEMBER.getValue());
+			responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
+			responseDTO.setMsg(ResultCode.NOT_FOUND_INFO.getValue());
 		}
 		return responseDTO;
 	}
@@ -115,7 +162,7 @@ public class MemberService {
 	@Transactional("transactionManager")
 	public ResponseDTO delete(long memberSeq){
 		ResponseDTO responseDTO = new ResponseDTO();
-		Optional<Member> m = memberRepository.findById(memberSeq);
+		Optional<Member> m = memberRepository.findByMemberSeq(memberSeq);
 		if(m.isPresent()){
 			Member member = m.get();
 			member.setUseYn("N");
@@ -123,8 +170,8 @@ public class MemberService {
 			responseDTO.setResultCode(ResultCode.DELETE.getName());
 			responseDTO.setMsg(ResultCode.DELETE.getValue());
 		} else {
-			responseDTO.setResultCode(ResultCode.NOT_FOUND_MEMBER.getName());
-			responseDTO.setMsg(ResultCode.NOT_FOUND_MEMBER.getValue());
+			responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
+			responseDTO.setMsg(ResultCode.NOT_FOUND_INFO.getValue());
 		}
 		return responseDTO;
 	}
@@ -210,26 +257,10 @@ public class MemberService {
 		String accessToken = JWT.create()
 				.withSubject(member.getEmail())
 				.withExpiresAt(new Date(now + AT_EXP_TIME))
-				.withClaim("roles", member.getRoles().stream().map(Role::getRoleId)
-						.collect(Collectors.toList()))
 				.sign(Algorithm.HMAC256(ADMIN_JWT_SECRET));
 
 		accessTokenResponseMap.put(AT_HEADER, accessToken);
 		return accessTokenResponseMap;
-	}
-
-	public ResponseDTO selectObject(Object obj) {
-		ResponseDTO dto = new ResponseDTO();
-		if (obj == null) {
-			dto.setResultCode(ResultCode.EMPTY.getName());
-			dto.setMsg(ResultCode.EMPTY.getValue());
-		} else {
-			dto.setResultCode(ResultCode.SUCCESS.getName());
-			dto.setMsg(ResultCode.SUCCESS.getValue());
-			dto.setRes(obj);
-		}
-
-		return dto;
 	}
 
 	public ResponseDTO validationCheck(Member member, String type) {
