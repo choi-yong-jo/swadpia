@@ -1,7 +1,11 @@
 package kr.co.swadpia.member.dto;
 
 import jakarta.persistence.Column;
+import kr.co.swadpia.member.entity.MemberRole;
+import kr.co.swadpia.member.entity.Role;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class MemberDTO {
@@ -22,5 +26,9 @@ public class MemberDTO {
 
 	@Column(length = 20)
 	private String mobile;
+
+	private String roles;
+
+//	private List<Role> roles;
 
 }

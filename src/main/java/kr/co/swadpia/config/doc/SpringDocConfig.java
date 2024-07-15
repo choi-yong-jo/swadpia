@@ -61,26 +61,28 @@ public class SpringDocConfig {
                 .build();
     }
 
-//    @Bean
-//    public GroupedOpenApi admin() {
-//        return GroupedOpenApi.builder()
-//                .group("admin")
-//                .pathsToMatch(
-//                        "/api/admin/**"
-//                )
-//                .build();
-//    }
-//
-//    @Bean
-//    public GroupedOpenApi system() {
-//        return GroupedOpenApi.builder()
-//            .group("system_v0")
-//            .pathsToMatch(
-//                "/api/v0/system/**"
-//            )
-//            .build();
-//    }
-//
+    @Bean
+    public GroupedOpenApi admin() {
+        return GroupedOpenApi.builder()
+                .group("admin")
+                .pathsToMatch(
+                        "/api/admin/**"
+                )
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi system() {
+        return GroupedOpenApi.builder()
+            .group("system")
+                .pathsToMatch(
+                        "/api/system/**",
+                        "/api/common/**",
+                        "/api/menu/**"
+                )
+            .build();
+    }
+
 //    @Bean
 //    public GroupedOpenApi common() {
 //        return GroupedOpenApi.builder()

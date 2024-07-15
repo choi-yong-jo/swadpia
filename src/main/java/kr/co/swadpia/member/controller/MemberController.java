@@ -7,12 +7,14 @@ import kr.co.swadpia.common.dto.ResponseDTO;
 import kr.co.swadpia.common.utility.SHA256;
 import kr.co.swadpia.member.dto.*;
 import kr.co.swadpia.member.entity.Member;
+import kr.co.swadpia.member.entity.MemberRole;
 import kr.co.swadpia.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -54,24 +56,41 @@ public class MemberController {
 
     @Operation(summary = "회원등록")
     @PostMapping
+    @Transactional("transactionManager")
     public ResponseEntity<?> insertMember(@RequestBody MemberDTO dto) throws NoSuchAlgorithmException {
         dto.setPassword(SHA256.encrypt(dto.getPassword()));
         ResponseDTO responseDTO = memberService.insert(dto);
+        if(dto.getRoles() != null) {
+            MemberRoleDTO mr = new MemberRoleDTO();
+            Member m = (Member) responseDTO.getRes();
+            mr.setMemberSeq(m.getMemberSeq());
+            mr.setRoles(dto.getRoles());
+            responseDTO = memberService.insertMemberRole(mr);
+        }
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "회원수정")
     @PatchMapping
+    @Transactional("transactionManager")
     public ResponseEntity<?> updateMember(@RequestParam Long memberSeq ,@RequestBody MemberDTO dto) throws NoSuchAlgorithmException {
         dto.setPassword(SHA256.encrypt(dto.getPassword()));
-        ResponseDTO responseDTO = memberService.update(memberSeq, dto);
+        ResponseDTO responseDTO = new ResponseDTO();
+        if(dto.getRoles() != null) {
+            MemberRoleDTO mr = new MemberRoleDTO();
+            mr.setMemberSeq(memberSeq);
+            mr.setRoles(dto.getRoles());
+            responseDTO = memberService.insertMemberRole(mr);
+        }
+        responseDTO = memberService.update(memberSeq, dto);
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "회원삭제")
     @DeleteMapping
+    @Transactional("transactionManager")
     public ResponseEntity<?> deleteMember(@RequestParam("memberSeq") Long memberSeq) throws NoSuchAlgorithmException {
         ResponseDTO responseDTO = memberService.delete(memberSeq);
 

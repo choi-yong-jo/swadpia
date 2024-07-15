@@ -47,7 +47,7 @@ public class Member extends AuditingAt {
     private String refreshToken;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "memberRole", joinColumns = @JoinColumn(name = "memberId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
+    @JoinTable(name = "memberRole", joinColumns = @JoinColumn(name = "memberSeq"), inverseJoinColumns = @JoinColumn(name = "roleSeq"))
     private List<Role> roles;
 
 }

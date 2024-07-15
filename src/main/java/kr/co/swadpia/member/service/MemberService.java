@@ -3,8 +3,13 @@ package kr.co.swadpia.member.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
 import kr.co.swadpia.common.service.CommonUtilService;
@@ -24,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static kr.co.swadpia.config.auth.JwtConstants.*;
+import static com.querydsl.core.types.dsl.Expressions.*;
+import static com.querydsl.jpa.JPAExpressions.*;
 
 @Slf4j
 @Service
@@ -39,13 +46,29 @@ public class MemberService {
 	@Autowired
 	private RoleService roleService;
 
-	@Autowired
+	@PersistenceContext
 	EntityManager em;
 
 	@Autowired
 	CommonUtilService commonUtilService;
 
 	JPAQueryFactory queryFactory;
+	
+	public ResponseDTO findAll() {
+		// [1번째 방식] JPA 형식으로 list 구현
+		List<Member> members = new ArrayList<>();
+		memberRepository.findByUseYn("Y").forEach(e -> members.add((Member) e));
+
+		// [2번째 방식] queryDSL 이용한 list 구현
+//		List<Member> members = selectMember("Y");
+
+		ResponseDTO responseDTO = commonUtilService.selectObject(members);
+
+		// Member 테이블에 Team 조인, MemberRole 서브쿼리한 queryDSL
+//		ResponseDTO responseDTO = selectMemberInfo("Y");
+
+		return responseDTO;
+	}
 
 	public List<Member> selectMember(String useYn) {
 		List<Member> list;
@@ -61,35 +84,28 @@ public class MemberService {
 	}
 
 	public ResponseDTO selectMemberInfo(String useYn) {
-		List<Tuple> info;
+		List<Tuple> result;
 		QMember m = QMember.member;
+		QMemberRole mr = QMemberRole.memberRole;
 		QTeam t = QTeam.team;
 		queryFactory = new JPAQueryFactory(em);
-		info = queryFactory.from(m)
-				.select(m.memberId, t.teamNm, m.name, m.email, m.mobile)
-				.innerJoin(t)
-				.on(t.teamId.eq(m.teamId))
-				.where(
-						m.useYn.eq(useYn)
-				).fetch().stream().toList();
+		result = queryFactory
+				.select(m.memberId, m.mobile, m.name,
+					select(Expressions.stringTemplate("concat({0},'팀')", t.teamNm))
+					.from(t)
+					.where(t.teamId.eq(m.teamId)),
+					select(Expressions.stringTemplate("string_agg({0}, '|')", mr.roleSeq.stringValue()))
+					.from(mr)
+					.where(mr.memberSeq.eq(m.memberSeq))
+				)
+				.from(m)
+				.where(m.useYn.eq(useYn))
+				.fetch().stream().toList();
 
-		String[] column = {"memberId","teamNm","name","email","mobile"};
-		ResponseDTO data = commonUtilService.setMemberDetail(column, info);
+		String[] column = {"memberId","mobile","name","teamNm","roles"};
+		ResponseDTO data = commonUtilService.setMemberDetail(column, result);
 
 		return data;
-	}
-	
-	public ResponseDTO findAll() {
-		List<Member> members = new ArrayList<>();
-//		memberRepository.findAll().forEach(e -> members.add(e));
-//		memberRepository.findByUseYn("Y").forEach(e -> members.add((Member) e));
-		members = selectMember("Y");
-
-		ResponseDTO responseDTO = commonUtilService.selectObject(members);
-
-//		ResponseDTO responseDTO = selectMemberInfo("Y");
-
-		return responseDTO;
 	}
 
 	public ResponseDTO getMemberDetail(long memberSeq){
@@ -157,8 +173,10 @@ public class MemberService {
 		ResponseDTO responseDTO = validationCheck(member, "I");
 		if ("".equals(responseDTO.getResultCode()) || responseDTO.getResultCode() == null) {
 			memberRepository.save(member);
+			System.out.println("memberSeq = " + member.getMemberSeq());
 			responseDTO.setResultCode(ResultCode.INSERT.getName());
 			responseDTO.setMsg(ResultCode.INSERT.getValue());
+			responseDTO.setRes(member);
 		}
 
 		return responseDTO;
@@ -177,6 +195,7 @@ public class MemberService {
 				memberRepository.save(member);
 				responseDTO.setResultCode(ResultCode.UPDATE.getName());
 				responseDTO.setMsg(ResultCode.UPDATE.getValue());
+				responseDTO.setRes(member);
 			}
 		} else {
 			responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
@@ -195,6 +214,7 @@ public class MemberService {
 			memberRepository.save(member);
 			responseDTO.setResultCode(ResultCode.DELETE.getName());
 			responseDTO.setMsg(ResultCode.DELETE.getValue());
+			responseDTO.setRes(member);
 		} else {
 			responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
 			responseDTO.setMsg(ResultCode.NOT_FOUND_INFO.getValue());
@@ -211,9 +231,9 @@ public class MemberService {
 	@Transactional("transactionManager")
 	public ResponseDTO insertMemberRole(MemberRoleDTO dto) {
 		ResponseDTO responseDTO = new ResponseDTO();
-		String[] role = dto.getRoles().split(",");
 		List<MemberRole> roles = memberRoleRepository.findByMemberSeqOrderByRoleSeq(dto.getMemberSeq());
 		int insCnt = 0;
+		String[] role = dto.getRoles().split(",");
 		for(int i=0 ; i<role.length; i++) {
 			boolean existedRole = true;
 			boolean roleCheck = false;
