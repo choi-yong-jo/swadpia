@@ -1,15 +1,12 @@
 package kr.co.swadpia.member.controller;
 
-import com.querydsl.core.Tuple;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
-import kr.co.swadpia.common.service.CommonUtilService;
 import kr.co.swadpia.common.utility.SHA256;
 import kr.co.swadpia.member.dto.*;
 import kr.co.swadpia.member.entity.Member;
-import kr.co.swadpia.member.entity.MemberRole;
 import kr.co.swadpia.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -32,14 +28,10 @@ public class MemberController {
     @Autowired
     MemberService memberService;
 
-    @Autowired
-    CommonUtilService commonUtilService;
-
     @Operation(summary = "회원조회")
     @GetMapping(value = "/list")
     public ResponseEntity<?> getAllmembers() {
-        List<Member> member = memberService.findAll();
-        ResponseDTO responseDTO = commonUtilService.selectObject(member);
+        ResponseDTO responseDTO = memberService.findAll();
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
@@ -56,8 +48,8 @@ public class MemberController {
     @Operation(summary = "회원상세조회")
     @GetMapping(value = "/detail")
     public ResponseEntity<?> getMember(@RequestParam("memberSeq") Long memberSeq) {
-        MemberDetailDTO info = (MemberDetailDTO) memberService.getMemberDetail(memberSeq);
-        return new ResponseEntity<>(info, HttpStatus.OK);
+        ResponseDTO responseDTO = memberService.getMemberDetail(memberSeq);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @Operation(summary = "회원등록")
@@ -89,8 +81,7 @@ public class MemberController {
     @Operation(summary = "회원권한조회")
     @GetMapping(value = "/mapping")
     public ResponseEntity<?> insertMemberRole(@RequestParam("memberSeq") Long memberSeq) {
-        List<MemberRole> roles = memberService.mappingById(memberSeq);
-        ResponseDTO responseDTO = commonUtilService.selectObject(roles);
+        ResponseDTO responseDTO = memberService.mappingById(memberSeq);
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }

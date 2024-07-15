@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
+import kr.co.swadpia.common.service.CommonUtilService;
 import kr.co.swadpia.common.utility.RegexUtils;
 import kr.co.swadpia.member.entity.*;
 import kr.co.swadpia.member.dto.*;
@@ -41,31 +42,57 @@ public class MemberService {
 	@Autowired
 	EntityManager em;
 
+	@Autowired
+	CommonUtilService commonUtilService;
+
 	JPAQueryFactory queryFactory;
 
-	public List<Member> selectMember(String memberId, String teamId) {
-		List<Member> list = new ArrayList<>();
+	public List<Member> selectMember(String useYn) {
+		List<Member> list;
 		QMember m = QMember.member;
 		queryFactory = new JPAQueryFactory(em);
 		list = queryFactory
 				.selectFrom(m)
 				.where(
-						m.memberId.eq(memberId)
-						, m.teamId.eq(teamId)
+						m.useYn.eq(useYn)
 				).fetch().stream().toList();
 
 		return list;
 	}
+
+	public ResponseDTO selectMemberInfo(String useYn) {
+		List<Tuple> info;
+		QMember m = QMember.member;
+		QTeam t = QTeam.team;
+		queryFactory = new JPAQueryFactory(em);
+		info = queryFactory.from(m)
+				.select(m.memberId, t.teamNm, m.name, m.email, m.mobile)
+				.innerJoin(t)
+				.on(t.teamId.eq(m.teamId))
+				.where(
+						m.useYn.eq(useYn)
+				).fetch().stream().toList();
+
+		String[] column = {"memberId","teamNm","name","email","mobile"};
+		ResponseDTO data = commonUtilService.setMemberDetail(column, info);
+
+		return data;
+	}
 	
-	public List<Member> findAll() {
+	public ResponseDTO findAll() {
 		List<Member> members = new ArrayList<>();
 //		memberRepository.findAll().forEach(e -> members.add(e));
-		memberRepository.findByUseYn("Y").forEach(e -> members.add((Member) e));
-//		members = selectMember("cyjo1207","develop");
-		return members;
+//		memberRepository.findByUseYn("Y").forEach(e -> members.add((Member) e));
+		members = selectMember("Y");
+
+		ResponseDTO responseDTO = commonUtilService.selectObject(members);
+
+//		ResponseDTO responseDTO = selectMemberInfo("Y");
+
+		return responseDTO;
 	}
 
-	public Object getMemberDetail(long memberSeq){
+	public ResponseDTO getMemberDetail(long memberSeq){
 		List<Tuple> info;
 		QMember m = QMember.member;
 		QTeam t = QTeam.team;
@@ -78,10 +105,9 @@ public class MemberService {
 						m.memberSeq.eq(memberSeq)
 				).fetch().stream().toList();
 
-		log.info(info.toString());
-		log.info(info.get(0).toString());
-
-		return info.get(0);
+		String[] column = {"memberId","teamNm","name","email","mobile"};
+		ResponseDTO data = commonUtilService.setMemberDetail(column, info);
+		return data;
 	}
 
 	public Optional<Member> findById(long memberSeq){
@@ -176,9 +202,10 @@ public class MemberService {
 		return responseDTO;
 	}
 
-	public List<MemberRole> mappingById(Long memberSeq) {
+	public ResponseDTO mappingById(Long memberSeq) {
 		List<MemberRole> roles = memberRoleRepository.findByMemberSeqOrderByRoleSeq(memberSeq);
-		return roles;
+		ResponseDTO responseDTO = commonUtilService.selectObject(roles);
+		return responseDTO;
 	}
 
 	@Transactional("transactionManager")

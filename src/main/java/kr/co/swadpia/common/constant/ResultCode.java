@@ -13,6 +13,7 @@ public enum ResultCode {
     NOT_INSERT_MEMBER_ROLE_EXIST("Not Insert Member Role Exist", "추가할 회원 권한 대상이 존재합니다."),
     NOT_DELETE_MEMBER_ROLE("Not Delete Member Role", "삭제할 회원 권한 대상이 없습니다."),
     NOT_FOUND_INFO("Not Found Infomation", "해당 정보를 찾을 수 없습니다."),
+    NOT_VALIDATED_COLUMN_COUNT("Not validation Column Count", "컬럼 수가 서로 일치하지 않습니다."),
     NOT_VALIDATED_REQUEST("Not Validated", "데이터 요청 값이 유효하지 않습니다."),
     NOT_VALIDATED_PASSWORD("Not Validated Password", "패쓰워드가 일치하지 않습니다."),
     NOT_INSERT_SAME_MEMBER_ID("Not Insert Same Member ID", "동일한 아이디로 등록할 수 없습니다."),

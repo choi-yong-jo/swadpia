@@ -2,6 +2,7 @@ package kr.co.swadpia.common.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.core.Tuple;
 import io.minio.MinioClient;
 import io.minio.errors.InvalidEndpointException;
 import io.minio.errors.InvalidPortException;
@@ -20,6 +21,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -447,6 +452,37 @@ public class CommonUtilService {
         }
 
         return dto;
+    }
+
+    public ResponseDTO setMemberDetail(String[] column, java.util.List<Tuple> tuples) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        if (tuples.isEmpty()) {
+            responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
+            responseDTO.setMsg(ResultCode.NOT_FOUND_INFO.getValue());
+        } else if (column.length != tuples.get(0).size()) {
+            responseDTO.setResultCode(ResultCode.NOT_VALIDATED_COLUMN_COUNT.getName());
+            responseDTO.setMsg(ResultCode.NOT_VALIDATED_COLUMN_COUNT.getValue());
+        } else {
+            String[] rows = tuples.toString().split("],");
+            List<Map> list = new ArrayList<>(rows.length);
+            for(int i=0; i< rows.length; i++) {
+                Map<String, Object> map = new HashMap<>();
+                String[] cols = rows[i]
+                        .replace("[","")
+                        .replace("]","")
+                        .split(",");
+
+                for (int j=0; j<cols.length; j++) {
+                    map.put(column[j], cols[j]);
+                }
+                list.add(map);
+            }
+            responseDTO.setResultCode(ResultCode.SUCCESS.getName());
+            responseDTO.setMsg(ResultCode.SUCCESS.getValue());
+            responseDTO.setRes(list);
+        }
+
+        return responseDTO;
     }
 
 }
