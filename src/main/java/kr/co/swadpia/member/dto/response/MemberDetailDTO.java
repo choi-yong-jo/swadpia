@@ -1,25 +1,21 @@
-package kr.co.swadpia.member.dto;
+package kr.co.swadpia.member.dto.response;
 
 import jakarta.persistence.Column;
-import kr.co.swadpia.member.entity.MemberRole;
-import kr.co.swadpia.member.entity.Role;
 import lombok.Data;
 
-import java.util.List;
+import java.util.HashMap;
 
 @Data
-public class MemberDTO {
+public class MemberDetailDTO extends HashMap<String, String> {
 
 	@Column(length = 20)
 	private String memberId;
 
 	@Column(length = 20)
-	private String teamId;
+	private String teamNm;
 
 	@Column(length = 20)
 	private String name;
-
-	private String password;
 
 	@Column(length = 50)
 	private String email;
@@ -28,7 +24,5 @@ public class MemberDTO {
 	private String mobile;
 
 	private String roles;
-
-//	private List<Role> roles;
 
 }

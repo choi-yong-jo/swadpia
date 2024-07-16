@@ -1,6 +1,7 @@
-package kr.co.swadpia.repository.jpa;
+package kr.co.swadpia.repository.jpa.member;
 
 import kr.co.swadpia.member.entity.Member;
+import kr.co.swadpia.repository.jpa.GenericRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

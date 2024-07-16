@@ -1,4 +1,4 @@
-package kr.co.swadpia.member.dto;
+package kr.co.swadpia.member.dto.request;
 
 import lombok.Data;
 

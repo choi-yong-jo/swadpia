@@ -5,9 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
 import kr.co.swadpia.common.utility.SHA256;
-import kr.co.swadpia.member.dto.*;
+import kr.co.swadpia.member.dto.request.LoginDTO;
+import kr.co.swadpia.member.dto.request.MemberDTO;
+import kr.co.swadpia.member.dto.request.MemberRoleDTO;
+import kr.co.swadpia.member.dto.response.MemberDetailDTO;
 import kr.co.swadpia.member.entity.Member;
 import kr.co.swadpia.member.service.MemberService;
+import kr.co.swadpia.repository.jpa.member.MemberRoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -28,6 +34,10 @@ public class MemberController {
 
     @Autowired
     MemberService memberService;
+    
+    @Autowired
+    private MemberRoleRepository memberRoleRepository;
+    
 
     @Operation(summary = "회원조회")
     @GetMapping(value = "/list")
@@ -75,13 +85,18 @@ public class MemberController {
     @Transactional("transactionManager")
     public ResponseEntity<?> updateMember(@RequestParam Long memberSeq ,@RequestBody MemberDTO dto) throws NoSuchAlgorithmException {
         dto.setPassword(SHA256.encrypt(dto.getPassword()));
-        ResponseDTO responseDTO = new ResponseDTO();
-        if(dto.getRoles() != null) {
+        ResponseDTO responseDTO = memberService.getMemberDetail(memberSeq);
+        List<MemberDetailDTO> mrList = (List<MemberDetailDTO>) responseDTO.getRes();
+        HashMap<String, String> map = mrList.get(0);
+        String roles = map.get("roles").replace("|",",").trim();
+        if(dto.getRoles() != null && !dto.getRoles().equals(roles)) {
+            memberRoleRepository.deleteByMemberSeq(memberSeq);
             MemberRoleDTO mr = new MemberRoleDTO();
             mr.setMemberSeq(memberSeq);
             mr.setRoles(dto.getRoles());
-            responseDTO = memberService.updateMemberRole(mr);
+            responseDTO = memberService.insertMemberRole(mr);
         }
+
         if(responseDTO.getResultCode().equals("SUCCESS")) {
             responseDTO = memberService.update(memberSeq, dto);
         }

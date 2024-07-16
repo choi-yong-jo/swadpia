@@ -3,6 +3,7 @@ package kr.co.swadpia.member.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -11,10 +12,13 @@ import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
 import kr.co.swadpia.common.service.CommonUtilService;
 import kr.co.swadpia.common.utility.RegexUtils;
+import kr.co.swadpia.member.dto.request.LoginDTO;
+import kr.co.swadpia.member.dto.request.MemberDTO;
+import kr.co.swadpia.member.dto.request.MemberRoleDTO;
+import kr.co.swadpia.member.dto.request.SearchRequestMemberDTO;
 import kr.co.swadpia.member.entity.*;
-import kr.co.swadpia.member.dto.*;
-import kr.co.swadpia.repository.jpa.MemberRepository;
-import kr.co.swadpia.repository.jpa.MemberRoleRepository;
+import kr.co.swadpia.repository.jpa.member.MemberRepository;
+import kr.co.swadpia.repository.jpa.member.MemberRoleRepository;
 import kr.co.swadpia.team.entity.QTeam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 import static kr.co.swadpia.config.auth.JwtConstants.*;
@@ -50,6 +53,10 @@ public class MemberService {
 	CommonUtilService commonUtilService;
 
 	JPAQueryFactory queryFactory;
+	QMember m;
+	QMemberRole mr;
+	QTeam t;
+
 	
 	public ResponseDTO findAll() {
 		// [1번째 방식] JPA 형식으로 list 구현
@@ -58,42 +65,76 @@ public class MemberService {
 
 		// [2번째 방식] queryDSL 이용한 list 구현
 //		List<Member> members = selectMember("Y");
-
 //		ResponseDTO responseDTO = commonUtilService.selectObject(members);
 
-		// Member 테이블에 Team 조인, MemberRole 서브쿼리한 queryDSL
-		ResponseDTO responseDTO = selectMemberInfo("Y");
+		// [3번째 방식] Member 테이블에 Team 조인, MemberRole 서브쿼리한 queryDSL
+//		ResponseDTO responseDTO = selectMemberInfo("Y");
+
+		// [4번째 방식] 검색조건(where) 사용한 queryDSL
+		SearchRequestMemberDTO requestDTO = new SearchRequestMemberDTO();
+		requestDTO.setUseYn("Y");
+		ResponseDTO responseDTO = searchMemberInfo(requestDTO);
 
 		return responseDTO;
 	}
 
+	private ResponseDTO searchMemberInfo(SearchRequestMemberDTO dto) {
+		List<Tuple> result;
+		m = QMember.member;
+		mr = QMemberRole.memberRole;
+		t = QTeam.team;
+		queryFactory = new JPAQueryFactory(em);
+		result = queryFactory
+				.select(m.memberId
+						, m.mobile
+						, m.name
+						, select(Expressions.stringTemplate("concat({0},'팀')", t.teamNm))
+								.from(t)
+								.where(t.teamId.eq(m.teamId))
+						, select(Expressions.stringTemplate("string_agg({0}, '|')", mr.roleSeq.stringValue()))
+								.from(mr)
+								.where(mr.memberSeq.eq(m.memberSeq))
+				)
+				.from(m)
+				.where(memberIdEq(dto.getMemberId())
+						, teamIdEq(dto.getTeamId())
+						, useYnEq(dto.getUseYn())
+				).fetch().stream().toList();
+
+		String[] column = {"memberId","mobile","name","teamNm","roles"};
+		ResponseDTO data = commonUtilService.setMemberDetail(column, result);
+
+		return data;
+	}
+
 	public List<Member> selectMember(String useYn) {
 		List<Member> list;
-		QMember m = QMember.member;
+		m = QMember.member;
 		queryFactory = new JPAQueryFactory(em);
 		list = queryFactory
 				.selectFrom(m)
-				.where(
-						m.useYn.eq(useYn)
-				).fetch().stream().toList();
+				.where(m.useYn.eq(useYn))
+				.fetch().stream().toList();
 
 		return list;
 	}
 
 	public ResponseDTO selectMemberInfo(String useYn) {
 		List<Tuple> result;
-		QMember m = QMember.member;
-		QMemberRole mr = QMemberRole.memberRole;
-		QTeam t = QTeam.team;
+		m = QMember.member;
+		mr = QMemberRole.memberRole;
+		t = QTeam.team;
 		queryFactory = new JPAQueryFactory(em);
 		result = queryFactory
-				.select(m.memberId, m.mobile, m.name,
-					select(Expressions.stringTemplate("concat({0},'팀')", t.teamNm))
-					.from(t)
-					.where(t.teamId.eq(m.teamId)),
-					select(Expressions.stringTemplate("string_agg({0}, '|')", mr.roleSeq.stringValue()))
-					.from(mr)
-					.where(mr.memberSeq.eq(m.memberSeq))
+				.select(m.memberId
+						, m.mobile
+						, m.name
+						, select(Expressions.stringTemplate("concat({0},'팀')", t.teamNm))
+							.from(t)
+							.where(t.teamId.eq(m.teamId))
+						, select(Expressions.stringTemplate("string_agg({0}, '|')", mr.roleSeq.stringValue()))
+							.from(mr)
+							.where(mr.memberSeq.eq(m.memberSeq))
 				)
 				.from(m)
 				.where(m.useYn.eq(useYn))
@@ -107,9 +148,9 @@ public class MemberService {
 
 	public ResponseDTO getMemberDetail(long memberSeq){
 		List<Tuple> info;
-		QMember m = QMember.member;
-		QTeam t = QTeam.team;
-		QMemberRole mr = QMemberRole.memberRole;
+		m = QMember.member;
+		t = QTeam.team;
+		mr = QMemberRole.memberRole;
 		queryFactory = new JPAQueryFactory(em);
 		info = queryFactory.from(m)
 				.select(m.memberId
@@ -122,26 +163,21 @@ public class MemberService {
 							.where(mr.memberSeq.eq(m.memberSeq))
 				)
 				.innerJoin(t).on(t.teamId.eq(m.teamId))
-				.where(
-						m.memberSeq.eq(memberSeq)
-				).fetch().stream().toList();
+				.where(m.memberSeq.eq(memberSeq))
+				.fetch().stream().toList();
 		
 		String[] column = {"memberId","teamNm","name","email","mobile","roles"};
 		ResponseDTO data = commonUtilService.setMemberDetail(column, info);
 		return data;
 	}
 
-
-
 	public Optional<Member> findById(long memberSeq){
 		Optional<Member> member;
-		QMember m = QMember.member;
+		m = QMember.member;
 		queryFactory = new JPAQueryFactory(em);
 		member = Optional.ofNullable(
 				queryFactory.selectFrom(m)
-                .where(
-                	m.memberSeq.eq(memberSeq)
-                ).fetchOne());
+                .where(m.memberSeq.eq(memberSeq)).fetchOne());
 
 //		Optional<Member> member = memberRepository.findById(memberSeq);
 		return member;
@@ -253,8 +289,8 @@ public class MemberService {
 				memberRole.setMemberSeq(dto.getMemberSeq());
 				memberRole.setRoleSeq(Long.valueOf(role[i]));
 				memberRoleRepository.save(memberRole);
-				responseDTO.setResultCode(ResultCode.INSERT.getName());
-				responseDTO.setMsg(ResultCode.INSERT.getValue());
+				responseDTO.setResultCode(ResultCode.SUCCESS.getName());
+				responseDTO.setMsg(ResultCode.SUCCESS.getValue());
 			} else {
 				responseDTO.setResultCode(ResultCode.NOT_INSERT_MEMBER_ROLE_CHECK.getName());
 				responseDTO.setMsg(ResultCode.NOT_INSERT_MEMBER_ROLE_CHECK.getValue());
@@ -361,6 +397,16 @@ public class MemberService {
 		}
 
 		return responseDTO;
+	}
+
+	private Predicate memberIdEq(String memberId) {
+		return memberId == null ? null : m.memberId.eq(memberId);
+	}
+	private Predicate teamIdEq(String teamId) {
+		return teamId == null ? null : m.teamId.eq(teamId);
+	}
+	private Predicate useYnEq(String useYn) {
+		return useYn == null ? null : m.useYn.eq(useYn);
 	}
 
 }

@@ -2,9 +2,9 @@ package kr.co.swadpia.member.service;
 
 import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
-import kr.co.swadpia.member.dto.RoleDTO;
+import kr.co.swadpia.member.dto.request.RoleDTO;
 import kr.co.swadpia.member.entity.Role;
-import kr.co.swadpia.repository.jpa.RoleRepository;
+import kr.co.swadpia.repository.jpa.member.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;

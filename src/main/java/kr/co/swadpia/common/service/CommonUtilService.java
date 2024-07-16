@@ -9,7 +9,6 @@ import io.minio.errors.InvalidPortException;
 import jakarta.xml.bind.DatatypeConverter;
 import kr.co.swadpia.common.constant.ResultCode;
 import kr.co.swadpia.common.dto.ResponseDTO;
-import kr.co.swadpia.member.dto.MemberDTO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;

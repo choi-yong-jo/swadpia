@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.swadpia.common.dto.ResponseDTO;
 import kr.co.swadpia.common.service.CommonUtilService;
-import kr.co.swadpia.member.dto.RoleDTO;
+import kr.co.swadpia.member.dto.request.RoleDTO;
 import kr.co.swadpia.member.entity.Role;
 import kr.co.swadpia.member.service.MemberService;
 import kr.co.swadpia.member.service.RoleService;
