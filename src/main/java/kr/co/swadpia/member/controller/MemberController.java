@@ -7,7 +7,6 @@ import kr.co.swadpia.common.dto.ResponseDTO;
 import kr.co.swadpia.common.utility.SHA256;
 import kr.co.swadpia.member.dto.*;
 import kr.co.swadpia.member.entity.Member;
-import kr.co.swadpia.member.entity.MemberRole;
 import kr.co.swadpia.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,18 +48,18 @@ public class MemberController {
 
     @Operation(summary = "회원상세조회")
     @GetMapping(value = "/detail")
-    public ResponseEntity<?> getMember(@RequestParam("memberSeq") Long memberSeq) {
+    public ResponseEntity<?> getMember(@RequestParam("memberSeq") Long memberSeq){
         ResponseDTO responseDTO = memberService.getMemberDetail(memberSeq);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    @Operation(summary = "회원등록")
+    @Operation(summary = "회원등록(회원권한등록)")
     @PostMapping
     @Transactional("transactionManager")
     public ResponseEntity<?> insertMember(@RequestBody MemberDTO dto) throws NoSuchAlgorithmException {
         dto.setPassword(SHA256.encrypt(dto.getPassword()));
         ResponseDTO responseDTO = memberService.insert(dto);
-        if(dto.getRoles() != null) {
+        if(dto.getRoles() != null && responseDTO.getResultCode().equals("INSERT")) {
             MemberRoleDTO mr = new MemberRoleDTO();
             Member m = (Member) responseDTO.getRes();
             mr.setMemberSeq(m.getMemberSeq());
@@ -71,7 +70,7 @@ public class MemberController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    @Operation(summary = "회원수정")
+    @Operation(summary = "회원수정(기존 회원권한삭제 및 회원권한등록)")
     @PatchMapping
     @Transactional("transactionManager")
     public ResponseEntity<?> updateMember(@RequestParam Long memberSeq ,@RequestBody MemberDTO dto) throws NoSuchAlgorithmException {
@@ -81,9 +80,11 @@ public class MemberController {
             MemberRoleDTO mr = new MemberRoleDTO();
             mr.setMemberSeq(memberSeq);
             mr.setRoles(dto.getRoles());
-            responseDTO = memberService.insertMemberRole(mr);
+            responseDTO = memberService.updateMemberRole(mr);
         }
-        responseDTO = memberService.update(memberSeq, dto);
+        if(responseDTO.getResultCode().equals("SUCCESS")) {
+            responseDTO = memberService.update(memberSeq, dto);
+        }
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
@@ -111,7 +112,7 @@ public class MemberController {
         Optional<Member> m = memberService.findById(dto.getMemberSeq());
         ResponseDTO responseDTO = new ResponseDTO();
         if(m.isPresent()){
-            responseDTO = memberService.insertMemberRole(dto);
+            responseDTO = memberService.updateMemberRole(dto);
         } else {
             responseDTO.setResultCode(ResultCode.NOT_FOUND_INFO.getName());
             responseDTO.setMsg(ResultCode.NOT_FOUND_INFO.getValue());

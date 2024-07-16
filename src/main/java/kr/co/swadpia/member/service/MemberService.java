@@ -3,10 +3,7 @@ package kr.co.swadpia.member.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringExpression;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -26,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static kr.co.swadpia.config.auth.JwtConstants.*;
-import static com.querydsl.core.types.dsl.Expressions.*;
 import static com.querydsl.jpa.JPAExpressions.*;
 
 @Slf4j
@@ -62,10 +59,10 @@ public class MemberService {
 		// [2번째 방식] queryDSL 이용한 list 구현
 //		List<Member> members = selectMember("Y");
 
-		ResponseDTO responseDTO = commonUtilService.selectObject(members);
+//		ResponseDTO responseDTO = commonUtilService.selectObject(members);
 
 		// Member 테이블에 Team 조인, MemberRole 서브쿼리한 queryDSL
-//		ResponseDTO responseDTO = selectMemberInfo("Y");
+		ResponseDTO responseDTO = selectMemberInfo("Y");
 
 		return responseDTO;
 	}
@@ -112,19 +109,29 @@ public class MemberService {
 		List<Tuple> info;
 		QMember m = QMember.member;
 		QTeam t = QTeam.team;
+		QMemberRole mr = QMemberRole.memberRole;
 		queryFactory = new JPAQueryFactory(em);
 		info = queryFactory.from(m)
-				.select(m.memberId, t.teamNm, m.name, m.email, m.mobile)
-				.innerJoin(t)
-				.on(t.teamId.eq(m.teamId))
+				.select(m.memberId
+						, t.teamNm
+						, m.name
+						, m.email
+						, m.mobile
+						, select(Expressions.stringTemplate("string_agg({0}, '|')", mr.roleSeq.stringValue()))
+							.from(mr)
+							.where(mr.memberSeq.eq(m.memberSeq))
+				)
+				.innerJoin(t).on(t.teamId.eq(m.teamId))
 				.where(
 						m.memberSeq.eq(memberSeq)
 				).fetch().stream().toList();
-
-		String[] column = {"memberId","teamNm","name","email","mobile"};
+		
+		String[] column = {"memberId","teamNm","name","email","mobile","roles"};
 		ResponseDTO data = commonUtilService.setMemberDetail(column, info);
 		return data;
 	}
+
+
 
 	public Optional<Member> findById(long memberSeq){
 		Optional<Member> member;
@@ -231,41 +238,70 @@ public class MemberService {
 	@Transactional("transactionManager")
 	public ResponseDTO insertMemberRole(MemberRoleDTO dto) {
 		ResponseDTO responseDTO = new ResponseDTO();
-		List<MemberRole> roles = memberRoleRepository.findByMemberSeqOrderByRoleSeq(dto.getMemberSeq());
-		int insCnt = 0;
+		List<Role> list = roleService.findAll();
 		String[] role = dto.getRoles().split(",");
 		for(int i=0 ; i<role.length; i++) {
-			boolean existedRole = true;
 			boolean roleCheck = false;
-			if (roles.size() > 0) {
-				for (int j=0; j<roles.size(); j++) {
-					Long insRole = Long.valueOf(role[i]);
-					if(existedRole) {
-						existedRole = (insRole == roles.get(j).getRoleSeq()) ? false : true;
-					}
-				}
-			}
-			List<Role> list = roleService.findAll();
-			for(int k=0; k<list.size(); k++) {
+			for(int j=0; j<list.size(); j++) {
 				if (!roleCheck) {
-					roleCheck = (list.get(k).getRoleSeq() == Long.valueOf(role[i])) ? true : false;
+					roleCheck = (list.get(j).getRoleSeq() == Long.valueOf(role[i])) ? true : false;
 				}
 			}
-			if (existedRole && roleCheck) {
+
+			if (roleCheck) {
 				MemberRole memberRole = new MemberRole();
 				memberRole.setMemberSeq(dto.getMemberSeq());
 				memberRole.setRoleSeq(Long.valueOf(role[i]));
 				memberRoleRepository.save(memberRole);
-				insCnt++;
+				responseDTO.setResultCode(ResultCode.INSERT.getName());
+				responseDTO.setMsg(ResultCode.INSERT.getValue());
+			} else {
+				responseDTO.setResultCode(ResultCode.NOT_INSERT_MEMBER_ROLE_CHECK.getName());
+				responseDTO.setMsg(ResultCode.NOT_INSERT_MEMBER_ROLE_CHECK.getValue());
+				break;
 			}
 		}
 
-		if (insCnt > 0) {
-			responseDTO.setResultCode(ResultCode.INSERT.getName());
-			responseDTO.setMsg(ResultCode.INSERT.getValue());
-		} else {
-			responseDTO.setResultCode(ResultCode.NOT_INSERT_MEMBER_ROLE_EXIST.getName());
-			responseDTO.setMsg(ResultCode.NOT_INSERT_MEMBER_ROLE_EXIST.getValue());
+		return responseDTO;
+	}
+
+	@Transactional("transactionManager")
+	public ResponseDTO updateMemberRole(MemberRoleDTO dto) {
+		ResponseDTO responseDTO = new ResponseDTO();
+		List<MemberRole> roles = memberRoleRepository.findByMemberSeqOrderByRoleSeq(dto.getMemberSeq());
+		String[] role = dto.getRoles().split(",");
+		List<Role> list = roleService.findAll();
+		for(int i=0 ; i<role.length; i++) {
+			boolean roleCheck = false;
+			boolean existedRole = false;
+			for(int j=0; j<list.size(); j++) {
+				if (!roleCheck) {
+					roleCheck = (list.get(j).getRoleSeq() == Long.valueOf(role[i])) ? true : false;
+				}
+			}
+
+			if (!roleCheck) {
+				responseDTO.setResultCode(ResultCode.NOT_INSERT_MEMBER_ROLE_CHECK.getName());
+				responseDTO.setMsg(ResultCode.NOT_INSERT_MEMBER_ROLE_CHECK.getValue());
+				break;
+			}
+
+			for (int j=0; j<roles.size(); j++) {
+				Long insRole = Long.valueOf(role[i]);
+				if(!existedRole) {
+					existedRole = (insRole == roles.get(j).getRoleSeq()) ? true : false;
+				}
+			}
+
+			if(!existedRole && roleCheck) {
+				MemberRole memberRole = new MemberRole();
+				memberRole.setMemberSeq(dto.getMemberSeq());
+				memberRole.setRoleSeq(Long.valueOf(role[i]));
+				memberRoleRepository.save(memberRole);
+			}
+
+			responseDTO.setResultCode(ResultCode.SUCCESS.getName());
+			responseDTO.setMsg(ResultCode.SUCCESS.getValue());
 		}
 
 		return responseDTO;

@@ -4,13 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum ResultCode {
-    SUCCESS("Success", "성공"),
-    FAIL("Fail", "실패"),
-    EMPTY("empty", "해당 데이터가 존재하지 않습니다."),
-    INSERT("Insert", "등록 완료되었습니다."),
-    UPDATE("Update", "수정 완료되었습니다."),
-    DELETE("Delete", "삭제되었습니다."),
-    NOT_INSERT_MEMBER_ROLE_EXIST("Not Insert Member Role Exist", "추가할 회원 권한 대상이 존재합니다."),
+    SUCCESS("SUCCESS", "성공"),
+    FAIL("FAIL", "실패"),
+    EMPTY("EMPTY", "해당 데이터가 존재하지 않습니다."),
+    INSERT("INSERT", "등록 완료되었습니다."),
+    UPDATE("UPDATE", "수정 완료되었습니다."),
+    DELETE("DELETE", "삭제되었습니다."),
+    NOT_INSERT_MEMBER_ROLE_EXIST("Not Insert Member Role Exist", "회원 권한 대상이 존재합니다."),
+    NOT_INSERT_MEMBER_ROLE_CHECK("Not Insert Member Role Check", "추가할 회원 권한 대상이 존재하지 않습니다."),
     NOT_DELETE_MEMBER_ROLE("Not Delete Member Role", "삭제할 회원 권한 대상이 없습니다."),
     NOT_FOUND_INFO("Not Found Infomation", "해당 정보를 찾을 수 없습니다."),
     NOT_VALIDATED_COLUMN_COUNT("Not validation Column Count", "컬럼 수가 서로 일치하지 않습니다."),

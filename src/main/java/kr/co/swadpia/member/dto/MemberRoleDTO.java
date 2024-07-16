@@ -7,5 +7,4 @@ public class MemberRoleDTO {
 
 	private Long memberSeq;
 	private String roles;
-
 }
