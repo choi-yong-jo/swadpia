@@ -1,4 +1,4 @@
-package kr.co.swadpia.admin.dto;
+package kr.co.swadpia.common.dto;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

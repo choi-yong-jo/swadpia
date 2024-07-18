@@ -10,8 +10,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.co.swadpia.admin.dto.AdminSessionDTO;
-import kr.co.swadpia.admin.service.AdminAuthService;
+import kr.co.swadpia.common.dto.AdminSessionDTO;
+import kr.co.swadpia.common.service.AdminAuthService;
 import kr.co.swadpia.common.dto.ErrorResponseDTO;
 import kr.co.swadpia.common.constant.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +67,6 @@ public class AdminAuthorizationFilter extends OncePerRequestFilter {
                     // === Access Token 검증 === //
                     JWTVerifier verifier = JWT.require(Algorithm.HMAC256(ADMIN_JWT_SECRET)).build();
                     DecodedJWT decodedJWT = verifier.verify(accessToken);
-
 
                     // === Access Token 내 Claim에서 Authorities 꺼내 Authentication 객체 생성 & SecurityContext에 저장 === //
                     List<String> strAuthorities = decodedJWT.getClaim("roles").asList(String.class);

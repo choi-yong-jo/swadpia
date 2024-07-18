@@ -1,4 +1,4 @@
-package kr.co.swadpia.admin.controller;
+package kr.co.swadpia.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import kr.co.swadpia.admin.dto.AdminSessionDTO;
-import kr.co.swadpia.admin.service.AdminAuthService;
+import kr.co.swadpia.common.dto.AdminSessionDTO;
+import kr.co.swadpia.common.service.AdminAuthService;
 import kr.co.swadpia.common.dto.LoginParamDTO;
 import kr.co.swadpia.common.dto.TokenDTO;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +31,12 @@ public class AdminAuthController {
 
     private final AdminAuthService adminAuthService;
 
-
     @Operation(summary = "login", description = "로그인")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public TokenDTO login(@RequestBody @Valid LoginParamDTO param) throws Exception {
-
         return new TokenDTO();
-
     }
+
     @Operation(summary = "logout", description = "로그아웃")
     @RequestMapping(value="/logout", method=RequestMethod.GET)
     public String logout(HttpSession session){
@@ -50,25 +48,24 @@ public class AdminAuthController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Map<String,String>> refresh(HttpServletRequest request, HttpServletResponse response) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
-
         if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
             throw new RuntimeException("인증이 필요합니다.");
         }
+
         String refreshToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
         Map<String, String> tokens = adminAuthService.refresh(refreshToken);
         response.setHeader(AT_HEADER, tokens.get(AT_HEADER));
         if (tokens.get(RT_HEADER) != null) {
             response.setHeader(RT_HEADER, tokens.get(RT_HEADER));
         }
+
         return ResponseEntity.ok(tokens);
     }
+
     @Operation(summary = "test", description = "인증테스트")
     @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public AdminSessionDTO myinfio(
-            @AuthenticationPrincipal AdminSessionDTO adminSessionDTO) {
-
+    public AdminSessionDTO myInfo(@AuthenticationPrincipal AdminSessionDTO adminSessionDTO) {
         return adminSessionDTO;
-
     }
 
 

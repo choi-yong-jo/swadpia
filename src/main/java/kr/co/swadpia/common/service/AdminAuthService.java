@@ -1,11 +1,11 @@
-package kr.co.swadpia.admin.service;
+package kr.co.swadpia.common.service;
 
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import kr.co.swadpia.admin.dto.AdminSessionDTO;
+import kr.co.swadpia.common.dto.AdminSessionDTO;
 import kr.co.swadpia.common.entity.Admin;
 import kr.co.swadpia.member.entity.Role;
 import kr.co.swadpia.repository.jpa.AdminRepository;

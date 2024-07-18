@@ -1,6 +1,6 @@
 package kr.co.swadpia.config.auth;
 
-import kr.co.swadpia.admin.service.AdminAuthService;
+import kr.co.swadpia.common.service.AdminAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;

@@ -1,6 +1,6 @@
 package kr.co.swadpia.config.auditor;
 
-import kr.co.swadpia.admin.dto.AdminSessionDTO;
+import kr.co.swadpia.common.dto.AdminSessionDTO;
 import kr.co.swadpia.common.dto.SessionDTO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
