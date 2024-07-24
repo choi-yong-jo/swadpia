@@ -2,12 +2,12 @@ package kr.co.swadpia.common.entity;
 
 import jakarta.persistence.*;
 import kr.co.swadpia.common.constant.EmailType;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class EmailTemplate extends AuditingAt {
 
     @Id

@@ -2,14 +2,14 @@ package kr.co.swadpia.common.entity;
 
 import jakarta.persistence.*;
 import kr.co.swadpia.member.entity.Role;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class Admin extends AuditingAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

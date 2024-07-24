@@ -8,8 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Setter
-@Getter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommonExceptionHistory extends AuditingAtByCU {
     @Id

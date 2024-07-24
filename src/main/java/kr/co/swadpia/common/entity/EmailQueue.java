@@ -3,6 +3,7 @@ package kr.co.swadpia.common.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import kr.co.swadpia.common.constant.EmailType;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,8 +12,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class EmailQueue implements Serializable {
 
     @Id
